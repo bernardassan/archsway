@@ -108,14 +108,14 @@ fn download-zig {|tarball basename new_zig_exe install_dir_link zig_version|
 
     try {
         echo "Downloading repository..."
-        curl --output-dir $TMPDIR --remote-name  --continue-at - $tarball 
+        curl --output-dir $TMPDIR --remote-name  --continue-at - $tarball
         echo "Extracting "$TMPDIR/$basename" to "$ZIG_ROOT
         bsdtar --directory $ZIG_ROOT --extract --xz --file $TMPDIR/$basename
         update-symlink $new_zig_exe $install_dir_link $zig_version
     } catch err {
         put $err
         echo (styled "Error: update failed!" red)
-        os:remove-all $ZIG_ROOT/$zig_version 
+        os:remove-all $ZIG_ROOT/$zig_version
     }
 }
 
@@ -164,13 +164,13 @@ fn update-zig {|branch tarball basename new_zig_exe install_dir_link zig_version
 
 var usage = ^
 'Usage:
-zvm [-install master | 0.13.0] [-default]
+zvm [-install master | 0.14.0 | 0.13.0] [-default]
 '
 
-fn main {|&install=master &default=$false|
+fn main {|&install=master &set=master &default=$false|
     if $default {
         start
-        var info = (extract-info $install)
+        var info = (extract-info $set)
         set-default $info[new_zig_exe] $info[zig_version]
     } else {
         start
