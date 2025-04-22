@@ -10,4 +10,4 @@ keybind = ctrl+shift+z=jump_to_prompt:-1
 keybind = ctrl+shift+x=jump_to_prompt:+1
 keybind = ctrl+shift+left_bracket=goto_split:previous
 keybind = ctrl+shift+right_bracket=goto_split:next
-keybind = ctrl+w=close_window
+keybind = ctrl+w=close_surface

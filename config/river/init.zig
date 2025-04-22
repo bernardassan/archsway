@@ -8,6 +8,7 @@ const process = std.process;
 pub const std_options: std.Options = .{
     .log_level = .warn,
 };
+const log = std.log.scoped(.river_init);
 
 fn fmt(arena: mem.Allocator, comptime fmt_spec: []const u8, args: anytype) []const u8 {
     return std.fmt.allocPrint(arena, fmt_spec, args) catch unreachable;
@@ -238,7 +239,7 @@ const Run = struct {
             posix.LOCK.EX | posix.LOCK.NB,
         ) catch |err| switch (err) {
             error.WouldBlock => {
-                std.log.info(
+                log.info(
                     "Another instance of {[program]s} is running",
                     .{ .program = program },
                 );
@@ -1336,6 +1337,7 @@ const Run = struct {
         const pid = posix.fork() catch unreachable;
         if (pid < 0) {
             // fork failed
+            log.err("fork of river process failed", .{});
             posix.exit(5);
         } else if (pid == 0) {
             // child process
@@ -1354,6 +1356,7 @@ const Run = struct {
             }) catch unreachable;
         } else {
             //running rivertile in background so parent must not call waitpid
+            log.info("rivertile running in the backgroud", .{});
         }
     }
 };
