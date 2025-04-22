@@ -5,6 +5,9 @@ if test -n "$1"; then
   user_path=$1
   if test -d "$user_path"; then
     path=$user_path
+  elif test -f "$user_path"; then
+  # this case doesn't need bat try to fix it
+    path=$user_path
   else
     echo "Expected the first argument to rgf to be a path"
     echo "Path '${user_path}' does not exist or isn't a directory"

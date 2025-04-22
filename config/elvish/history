@@ -371,6 +371,7 @@ xdg-mime default firefox.desktop application/pdf
 xdg-mime query default application/epub
 xdg-mime query filetype ~/.local/neorg/index.norg
 xkbcli interactive-wayland
+xsltproc gir-fixes/Vips-8.0.xslt /usr/share/gir-1.0/Vips-8.0.gir > NewVips.gir
 yt-dlp -S 'res:720' 'https://www.youtube.com/watch?v=lLv1s7rKeCM'
 zgrep CONFIG_ZRAM_MULTI_COMP /proc/config.gz
 zig build -Dtarget=x86_64-linux-gnu.2.34
