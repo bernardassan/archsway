@@ -1,3 +1,4 @@
 # https://www.reddit.com/r/archlinux/comments/1124b9a/unable_to_disable_watchdog
 # Btrfs needs rootflags=subvol=/ when used as the root filesystem
-rw root=LABEL=ROOT resume=LABEL=SWAP zswap.enabled=0 module_blacklist=iTCO_wdt nowatchdog mitigations=off i915.mitigations=off i915.enable_guc=2 i915.enable_fbc=1 i915.enable_dc=3 i915.nuclear_pageflip=true
+# https://systemd.io/RANDOM_SEEDS/
+rw root=LABEL=ROOT resume=LABEL=SWAP zswap.enabled=0 module_blacklist=iTCO_wdt nowatchdog mitigations=off i915.mitigations=off i915.enable_guc=2 i915.enable_fbc=1 i915.enable_dc=3 i915.nuclear_pageflip=true random.trust_cpu=on rng_core.default_quality=1000
