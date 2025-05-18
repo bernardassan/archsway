@@ -3,7 +3,7 @@
 
 # <file system> <dir> <type> <options> <dump> <pass>
 # /dev/sda1 UUID=40B6-91E8
-LABEL=BOOT /boot vfat noatime,fmask=0077,dmask=0077 0 2
+LABEL=BOOT /boot vfat noatime,fmask=0022,dmask=0022 0 2
 
 # /dev/sda2 UUID=bdb04416-e6f2-4388-8757-8c6455b89d4a
 LABEL=ROOT / bcachefs noatime,errors=fix_safe,compression=zstd:3,background_compression=zstd:19,journal_flush_delay=180000,fsck,fix_errors,version_upgrade=incompatible 0 1
