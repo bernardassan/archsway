@@ -367,6 +367,7 @@ udevadm test --action=change /sys/class/power_supply/ADP1
 udevadm test-builtin net_id /sys/class/net/enp3s0
 udevadm trigger --action=add --verbose --type=subsystems --subsystem-match=usb --attr-match=attribute="removable==1"
 unshare --user --pid --map-root-user --mount-proc --fork bash
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.output.txt ./zig_c_program
 watchexec --shell=none --restart --watch src cargo run
 xdg-mime default firefox.desktop application/pdf
 xdg-mime query default application/epub
@@ -381,6 +382,7 @@ zig build -Dtarget=x86_64-linux-musl -Doptimize=ReleaseSafe
 zig build install --prefix ~/.local -Doptimize=ReleaseFast
 zig build test --summary all
 zig build-exe -fno-llvm -fno-lld -target aarch64-linux --show-builtin
+zig build-exe -lc -cflags -std=c2y -D_XOPEN_SOURCE=800 -- -target x86_64-linux-gnu -freference-trace=7 main.c allocator.zig
 zig build-exe -lc unique.zig
 zig targets | from-json | put (all)[libc] | order | each { |target| put $target } (all)
 zig targets | jq .libc
