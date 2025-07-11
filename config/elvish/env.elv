@@ -1,5 +1,5 @@
 use os
-use path 
+use path
 use runtime
 use str
 use platform
@@ -126,7 +126,7 @@ if (has-external starship) {
 
 if (has-external carapace) {
   # enable completions from these shells when completions aren't avilable in current shell
-  set-env CARAPACE_BRIDGES 'zsh,fish,bash,inshellisense' 
+  set-env CARAPACE_BRIDGES 'zsh,fish,bash,inshellisense'
   set-env CARAPACE_MATCH 1 # make completion matching case insensitive
   set-env CARAPACE_ENV 1 # enable environment variable completion
   set-env CARAPACE_LENIENT 1 # allow unknown flags
