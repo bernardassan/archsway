@@ -10,7 +10,7 @@ use ./modules
 
 # remove resource limits on core file generation
 if (has-key $unix:rlimits[core] cur) {
-     edit:del-var $unix:rlimits[core][cur] # (unlimited)
+     del unix:rlimits[core][cur] # (unlimited)
 }
 
 # elvish limited vi editing mode
