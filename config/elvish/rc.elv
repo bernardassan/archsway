@@ -8,9 +8,27 @@ use ./env
 use ./aliases
 use ./modules
 
-# remove resource limits on core file generation
-if (has-key $unix:rlimits[core] cur) {
-     del unix:rlimits[core][cur] # (unlimited)
+if ($env:is-wsl~) {
+     # remove resource limits on core file generation
+     if (has-key $unix:rlimits[core] cur) {
+          del unix:rlimits[core][cur] # (unlimited)
+     }
+
+     fn enable-coredump {|&path=/tmp/core|
+       var core_pattern = $path/"core.%P.%u.%g.%s.%t.%c.%h.%e"
+       var actual_core_pattern = (str:trim-prefix (sysctl kernel.core_pattern) "kernel.core_pattern = ")
+       try { var stat = (os:stat $path)
+       } catch err { os:mkdir-all &perm=0o777 $path }
+
+       if (not (eq $core_pattern $actual_core_pattern)) {
+          try {
+             sudo sysctl -w kernel.core_pattern=$core_pattern stdout>$os:dev-null
+          } catch err {
+             fail $err
+          }
+       }
+     }
+     edit:add-var enable-coredump~ $enable-coredump~
 }
 
 # elvish limited vi editing mode

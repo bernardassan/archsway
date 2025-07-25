@@ -105,6 +105,7 @@ e_inline_xattr,sb_checksum,compression /dev/sdb2
 ea
 echo (styled warning: red) bumpy road
 ee
+env CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Release -GNinja -DZIG_NO_LIB=ON -DZIG_EXTRA_BUILD_ARGS="--maxrss;7800000000" ..
 env RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup rustup update
 eq (uname) Linux
 eval (ssh-agent -t1d)
@@ -165,6 +166,7 @@ gpgconf --list-options gpg-agent
 grep 9000 /etc/services
 gsettings list-recursively org.gnome.desktop.interface
 helix --health toml
+inexact-num (/ 7800000000 (math:pow 1024 3))
 ip a
 ip route
 iwctl station wlp2s0 connect "Ultra Malpha"
