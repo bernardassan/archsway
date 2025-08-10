@@ -64,6 +64,7 @@ coredumpctl info
 coredumpctl list
 curl -L -# -o pretty-php.phar https://github.com/lkrms/pretty-php/releases/latest/download/pretty-php.phar
 curl -O https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
+curl -sLO https://github.com/Vexu/arocc/pull/878.patch
 curl icanhazip.com
 date -d '+2 Month Saturday'
 date -d 'next Wed'
@@ -233,6 +234,7 @@ openssl s_client -connect localhost:8082 -showcerts
 openssl speed rsa2048 ecdsap256 ed25519
 p10k configure
 pacman --noconfirm --root /host -Syu pacman
+patch -p1 < 878.patch
 php -S localhost:8000 -t src/
 php artisan serve &
 ping 102.211.186.199 -c 4
@@ -386,6 +388,7 @@ zig build test --summary all
 zig build-exe -fno-llvm -fno-lld -target aarch64-linux --show-builtin
 zig build-exe -lc -cflags -std=c2y -D_XOPEN_SOURCE=800 -- -target x86_64-linux-gnu -freference-trace=7 main.c allocator.zig
 zig build-exe -lc unique.zig
+zig fetch --save=zig-gobject git+https://github.com/ianprime0509/zig-gobject.git
 zig targets | from-json | put (all)[libc] | order | each { |target| put $target } (all)
 zig targets | jq .libc
 zig test -femit-bin=zigtest src/main.zig
@@ -396,4 +399,4 @@ zig test src/packed_and_extern_struct.zig
 zig translate-c -lc unique.c > unique.zig
 zig-update
 zig2 build-exe -fPIC -fno-lld -fno-stack-check --verbose-llvm-bc=main.bc -fno-emit-bin main.zig
-zig3 build -p stage4 -Denable-llvm -Dno-lib
+zig3 build -p stage4 -Doptimize=ReleaseFast -Denable-llvm -Dno-lib
