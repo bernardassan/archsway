@@ -383,7 +383,7 @@ zgrep CONFIG_ZRAM_MULTI_COMP /proc/config.gz
 zig build -Dno-bin -fincremental --watch run --verbose --summary all -- samples/image.avif
 zig build -Dtarget=x86_64-linux-gnu.2.34
 zig build -Dtarget=x86_64-linux-musl -Doptimize=ReleaseSafe
-zig build install --prefix ~/.local -Doptimize=ReleaseFast
+zig build install --prefix ~/.local -Doptimize=ReleaseFast --summary all
 zig build test --summary all
 zig build-exe -fno-llvm -fno-lld -target aarch64-linux --show-builtin
 zig build-exe -lc -cflags -std=c2y -D_XOPEN_SOURCE=800 -- -target x86_64-linux-gnu -freference-trace=7 main.c allocator.zig
