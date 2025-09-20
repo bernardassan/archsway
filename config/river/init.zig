@@ -27,7 +27,7 @@ const Options = struct {
     status_bar: []const u8,
     xcursor_theme: []const u8,
 
-    pub fn init(arena: mem.Allocator) @This() {
+    pub fn init(arena: mem.Allocator) Options {
         const HOME = getenv("HOME");
         const term = _terminal(arena, .ghostty);
 
@@ -79,7 +79,6 @@ const Options = struct {
                 const cmd = fmt(
                     arena,
                     "ghostty --gtk-single-instance=true --class=com.wm.ghostty.vt{[vtnr]s}",
-
                     .{ .vtnr = vtnr },
                 );
                 break :ghostty cmd;
@@ -109,9 +108,11 @@ const Options = struct {
         defer dir.close();
 
         const count = 16;
+        // https://github.com/ziglang/zig/issues/24918
+        // can't use decl literal with catch or orelse
         var wallpapers = std.ArrayList(
             []const u8,
-        ).initCapacity(arena, count) catch unreachable;
+        ).initCapacity(arena, count) catch @panic("OOM");
 
         var iter = dir.iterate();
         while (iter.next() catch unreachable) |entry| {
@@ -132,7 +133,7 @@ const Options = struct {
     }
 
     fn shuffle(T: type, items: []T) T {
-        var prng = std.Random.DefaultPrng.init(@intCast(std.time.timestamp()));
+        var prng: std.Random.DefaultPrng = .init(@intCast(std.time.timestamp()));
         const rand = prng.random();
         rand.shuffle(T, items);
         const choosen = items[0];
@@ -204,7 +205,7 @@ const Run = struct {
     }
 
     fn run(arena: mem.Allocator, cmd: []const u8) void {
-        var child = process.Child.init(&.{ "sh", "-c", cmd }, arena);
+        var child: process.Child = .init(&.{ "sh", "-c", cmd }, arena);
         const exec_status = child.spawnAndWait() catch unreachable;
 
         debug.assert(exec_status.Exited == 0);
@@ -226,8 +227,8 @@ const Run = struct {
                 \\Check and ensure you have permissions to {[lockfile]s}"
             , .{ .lockfile = lockfile }),
             else => process.fatal(
-                "{[err]s}: Failed to open lock file {[lockfile]s}",
-                .{ .err = @errorName(err), .lockfile = lockfile },
+                "{[err]t}: Failed to open lock file {[lockfile]s}",
+                .{ .err = err, .lockfile = lockfile },
             ),
         };
         // File lock will automatically release when the file descriptor is closed
@@ -249,8 +250,8 @@ const Run = struct {
                 "The underlying filesystem does not support file locks",
                 .{},
             ),
-            else => process.fatal("{[err]s}: Failed to flock {[lockfile]s}", .{
-                .err = @errorName(err),
+            else => process.fatal("{[err]t}: Failed to flock {[lockfile]s}", .{
+                .err = err,
                 .lockfile = lockfile,
             }),
         };
@@ -292,13 +293,10 @@ const Run = struct {
             @"scroll-method",
         };
 
-        var inputs = std.enums.EnumMap(
-            InputOptions,
-            []const u8,
-        ).init(.{
+        var inputs: std.enums.EnumMap(InputOptions, []const u8) = .init(.{
             .events = "disabled-on-external-mouse",
             .@"accel-profile" = "adaptive",
-            .@"pointer-accel" = "0.6",
+            .@"pointer-accel" = "0.7",
             .@"click-method" = "clickfinger",
             .drag = "enabled",
             .@"disable-while-typing" = "enabled",
@@ -313,10 +311,10 @@ const Run = struct {
         while (iter.next()) |option| {
             run(self.arena, fmt(
                 self.arena,
-                "riverctl input {[device]s} {[key]s} {[value]s}",
+                "riverctl input {[device]s} {[key]t} {[value]s}",
                 .{
                     .device = device,
-                    .key = @tagName(option.key),
+                    .key = option.key,
                     .value = option.value.*,
                 },
             ));
@@ -335,10 +333,7 @@ const Run = struct {
             @"default-layout",
         };
 
-        var options = std.enums.EnumMap(
-            RiverOptions,
-            []const u8,
-        ).init(.{
+        var options: std.enums.EnumMap(RiverOptions, []const u8) = .init(.{
             .@"default-attach-mode" = "top",
             .@"border-width" = "0",
             .@"focus-follows-cursor" = "normal",
@@ -353,9 +348,9 @@ const Run = struct {
         while (iter.next()) |option| {
             run(self.arena, fmt(
                 self.arena,
-                "riverctl {[option]s} {[value]s}",
+                "riverctl {[option]t} {[value]s}",
                 .{
-                    .option = @tagName(option.key),
+                    .option = option.key,
                     .value = option.value.*,
                 },
             ));
@@ -377,10 +372,7 @@ const Run = struct {
             @"color-scheme",
         };
 
-        var gsettings = std.enums.EnumMap(
-            Gsettings,
-            []const u8,
-        ).init(.{
+        var gsettings: std.enums.EnumMap(Gsettings, []const u8) = .init(.{
             .@"gtk-theme" = "Adwaita-dark",
             .@"icon-theme" = "Adwaita",
             .@"cursor-theme" = adwaita,
@@ -392,10 +384,10 @@ const Run = struct {
         while (iter.next()) |option| {
             run(self.arena, fmt(
                 self.arena,
-                "gsettings set {[group]s} {[key]s} {[value]s}",
+                "gsettings set {[group]s} {[key]t} {[value]s}",
                 .{
                     .group = setting_group,
-                    .key = @tagName(option.key),
+                    .key = option.key,
                     .value = option.value.*,
                 },
             ));
@@ -423,8 +415,8 @@ const Run = struct {
     fn mod(arena: mem.Allocator, mods: []const Mod) []const u8 {
         return switch (mods.len) {
             1 => @tagName(mods[0]),
-            2 => fmt(arena, "{s}+{s}", .{ @tagName(mods[0]), @tagName(mods[1]) }),
-            3 => fmt(arena, "{s}+{s}+{s}", .{ @tagName(mods[0]), @tagName(mods[1]), @tagName(mods[2]) }),
+            2 => fmt(arena, "{t}+{t}", .{ mods[0], mods[1] }),
+            3 => fmt(arena, "{t}+{t}+{t}", .{ mods[0], mods[1], mods[2] }),
             // only a maximum of 3 modifiers are supported
             else => unreachable,
         };
@@ -457,13 +449,13 @@ const Run = struct {
                                 arena,
                                 fmt(
                                     arena,
-                                    "riverctl {[type]s} {[opt]s} {[mode]s} {[mod]s} {[key]s} {[cmd]s}",
+                                    "riverctl {[type]t} {[opt]s} {[mode]t} {[mod]s} {[key]t} {[cmd]s}",
                                     .{
-                                        .type = @tagName(mtype),
+                                        .type = mtype,
                                         .opt = "",
-                                        .mode = @tagName(mode),
+                                        .mode = mode,
                                         .mod = mod(arena, normal.mod),
-                                        .key = @tagName(normal.key),
+                                        .key = normal.key,
                                         .cmd = normal.cmd,
                                     },
                                 ),
@@ -476,16 +468,16 @@ const Run = struct {
                                 arena,
                                 fmt(
                                     arena,
-                                    "riverctl {[type]s} {[opt]s} {[mode]s} {[mod]s} {[key]s} {[cmd]s}",
+                                    "riverctl {[type]t} {[opt]s} {[mode]s} {[mod]s} {[key]t} {[cmd]s}",
                                     .{
-                                        .type = @tagName(mtype),
+                                        .type = mtype,
                                         .opt = if (locked.opt) |opt|
-                                            fmt(arena, "-{[opt]s}", .{ .opt = @tagName(opt) })
+                                            fmt(arena, "-{[opt]t}", .{ .opt = opt })
                                         else
                                             "",
                                         .mode = @tagName(.locked),
                                         .mod = mod(arena, locked.mod),
-                                        .key = @tagName(locked.key),
+                                        .key = locked.key,
                                         .cmd = locked.cmd,
                                     },
                                 ),
@@ -496,16 +488,16 @@ const Run = struct {
                                 arena,
                                 fmt(
                                     arena,
-                                    "riverctl {[type]s} {[opt]s} {[mode]s} {[mod]s} {[key]s} {[cmd]s}",
+                                    "riverctl {[type]t} {[opt]s} {[mode]s} {[mod]s} {[key]t} {[cmd]s}",
                                     .{
-                                        .type = @tagName(mtype),
+                                        .type = mtype,
                                         .opt = if (locked.opt) |opt|
-                                            fmt(arena, "-{[opt]s}", .{ .opt = @tagName(opt) })
+                                            fmt(arena, "-{[opt]t}", .{ .opt = opt })
                                         else
                                             "",
                                         .mode = @tagName(.normal),
                                         .mod = mod(arena, locked.mod),
-                                        .key = @tagName(locked.key),
+                                        .key = locked.key,
                                         .cmd = locked.cmd,
                                     },
                                 ),
@@ -516,7 +508,7 @@ const Run = struct {
             }
         };
 
-        const normal_mappings = Map{
+        const normal_mappings: Map = .{
             .normal = &.{
                 .{
                     .mod = &.{.Super},
@@ -849,7 +841,7 @@ const Run = struct {
             },
         };
 
-        const locked_mappings = Map{
+        const locked_mappings: Map = .{
             .locked = &.{
                 // Eject optical drives
                 .{
@@ -962,7 +954,7 @@ const Run = struct {
         };
 
         // Mappings for pointer (mouse)
-        const pointer_mapping = Map{
+        const pointer_mapping: Map = .{
             .normal = &.{
                 // Super + Left Mouse Button to move views
                 .{
@@ -1016,10 +1008,10 @@ const Run = struct {
             ) void {
                 Run.run(arena, fmt(
                     arena,
-                    "riverctl map normal {[mod]s} {[key]s} enter-mode {[declared_mode]s}",
+                    "riverctl map normal {[mod]t} {[key]t} enter-mode {[declared_mode]s}",
                     .{
-                        .mod = @tagName(enter.mod),
-                        .key = @tagName(enter.key),
+                        .mod = enter.mod,
+                        .key = enter.key,
                         .declared_mode = mode_name,
                     },
                 ));
@@ -1032,10 +1024,10 @@ const Run = struct {
             ) void {
                 Run.run(
                     arena,
-                    fmt(arena, "riverctl map {[declared_mode]s} {[mod]s} {[key]s} enter-mode normal", .{
+                    fmt(arena, "riverctl map {[declared_mode]s} {[mod]t} {[key]t} enter-mode normal", .{
                         .declared_mode = mode_name,
-                        .mod = @tagName(exit.mod),
-                        .key = @tagName(exit.key),
+                        .mod = exit.mod,
+                        .key = exit.key,
                     }),
                 );
             }
@@ -1047,18 +1039,18 @@ const Run = struct {
 
                 for (mode.cmds) |cmd| {
                     Run.run(arena, fmt(arena,
-                        \\riverctl map {[declared_mode]s} {[mod]s} {[key]s} spawn "riverctl enter-mode normal  && {[cmd]s}"
+                        \\riverctl map {[declared_mode]s} {[mod]s} {[key]t} spawn "riverctl enter-mode normal  && {[cmd]s}"
                     , .{
                         .declared_mode = mode.name,
                         .mod = mod(arena, cmd.mod),
-                        .key = @tagName(cmd.key),
+                        .key = cmd.key,
                         .cmd = cmd.cmd,
                     }));
                 }
             }
         };
 
-        const power_management = UserMode{
+        const power_management: UserMode = .{
             .name = "power_management",
             .enter = .{
                 .mod = .Super,
@@ -1110,7 +1102,7 @@ const Run = struct {
         };
 
         // switch between 'passthrough' and 'normal' mode
-        const passthrough = UserMode{
+        const passthrough: UserMode = .{
             .name = "passthrough",
             .enter = .{
                 .mod = .Super,
@@ -1249,11 +1241,11 @@ const Run = struct {
                         for (frules) |rule| {
                             Run.run(arena, fmt(
                                 arena,
-                                "riverctl rule-add {[rule_type]s} '{[pattern]s}' {[action]s}",
+                                "riverctl rule-add {[rule_type]t} '{[pattern]s}' {[action]t}",
                                 .{
-                                    .rule_type = @tagName(rule.type),
+                                    .rule_type = rule.type,
                                     .pattern = rule.name,
-                                    .action = @tagName(action),
+                                    .action = action,
                                 },
                             ));
                         }
@@ -1262,11 +1254,11 @@ const Run = struct {
                         for (trules) |rule| {
                             Run.run(arena, fmt(
                                 arena,
-                                "riverctl rule-add {[rule_type]s} '{[pattern]s}' {[action]s} {[arguments]s}",
+                                "riverctl rule-add {[rule_type]t} '{[pattern]s}' {[action]t} {[arguments]s}",
                                 .{
-                                    .rule_type = @tagName(rule.type),
+                                    .rule_type = rule.type,
                                     .pattern = rule.name,
-                                    .action = @tagName(action),
+                                    .action = action,
                                     .arguments = rule.args,
                                 },
                             ));
@@ -1276,7 +1268,7 @@ const Run = struct {
             }
         };
 
-        const float = Rules{ .float = &.{
+        const float: Rules = .{ .float = &.{
             .{
                 .type = .@"-title",
                 .name = "Extension*",
@@ -1295,14 +1287,14 @@ const Run = struct {
             },
         } };
 
-        const csd = Rules{ .csd = &.{
+        const csd: Rules = .{ .csd = &.{
             .{
                 .type = .@"-app-id",
                 .name = "firefox",
             },
         } };
 
-        const tag = Rules{ .tags = &.{
+        const tag: Rules = .{ .tags = &.{
             .{
                 .type = .@"-app-id",
                 .name = "firefox",
@@ -1319,7 +1311,7 @@ const Run = struct {
             ) },
         } };
 
-        const position = Rules{ .position = &.{
+        const position: Rules = .{ .position = &.{
             .{
                 .type = .@"-title",
                 .name = "Picture-in-Picture",
@@ -1341,6 +1333,7 @@ const Run = struct {
             posix.exit(5);
         } else if (pid == 0) {
             // child process
+            // std.posix.setregid
             process.execv(r.arena, &.{
                 "rivertile",
                 "-view-padding",
@@ -1370,14 +1363,14 @@ pub fn main() !void {
         }
     }
     var buf: [1024 * 1024 * 1]u8 = undefined;
-    var fba = std.heap.FixedBufferAllocator.init(&buf);
-    var arena_allocator = std.heap.ArenaAllocator.init(fba.allocator());
+    var fba: std.heap.FixedBufferAllocator = .init(&buf);
+    var arena_allocator: std.heap.ArenaAllocator = .init(fba.allocator());
     const arena = arena_allocator.allocator();
 
-    const options = Options.init(arena);
+    const options: Options = .init(arena);
     //TODO: idea for improvement
     // https://codeberg.org/river/wiki/pulls/10
-    const run = Run.init(arena, options);
+    const run: Run = .init(arena, options);
 
     run.autostart();
     run.oneshot();
