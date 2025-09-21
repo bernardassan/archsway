@@ -28,7 +28,7 @@ more memory hungry tasks `.eg compiling llvm, clang, clang-tools, lldb`. Use a Z
     - intel-ucode microcode
     - iwd for wifi
     - kitty/foot terminal
-    - linux-firmware
+    - Install only needed linux-firmware, check firmwares you might need with `lspci` and [use dynamic debug](https://wiki.archlinux.org/title/Linux_firmware#Detecting_loaded_firmware) to know more details about the exact firmwares loaded at kernel startup
     - linux-zen
     - mesa for opengl
     - intel-media-driver for hardware video acceleration
@@ -130,11 +130,12 @@ Options=mode=1777,strictatime,nosuid,nodev,size=90%%,nr_inodes=1m
 - zoxide for efficient directory movement
 
 ## Configuring Firefox
-- Enable firefox [Hardware video acceleration](https://wiki.archlinux.org/title/Firefox#Hardware_video_acceleration) by setting media.ffmpeg.vaapi.enabled to true and Hardware WebRender by setting gfx.webrender.all to true
+- Enable firefox [Hardware video acceleration](https://wiki.archlinux.org/title/Firefox#Hardware_video_acceleration) by setting media.ffmpeg.vaapi.enabled to true and Hardware WebRender by setting gfx.webrender.all to true and media.hardware-video-decoding.force-enabled to true
+- Enable insert [new tabs after current](https://wiki.archlinux.org/title/Firefox#New_tabs_position)
 - Enable [Firefox Profile on Ram](https://wiki.archlinux.org/title/Firefox/Profile_on_RAM) when using zram/nvme/ssd
-- Move firefox [disk cache to ram](https://wiki.archlinux.org/title/Firefox/Tweaks#Move_disk_cache_to_RAM) by setting browser.cache.disk.parent_directory to /run/user/UID/firefox
-- where UID is your user's ID which can be obtained by running id -u
-- if not using [Firefox Profile on Ram](https://wiki.archlinux.org/title/Firefox/Profile_on_RAM) then increase session save interval from the default of 15 seconds (15000 milliseconds) to 10 minutes (600000 milliseconds) by setting browser.sessionstore.interval to 600000
+- Move firefox [disk cache to ram](https://wiki.archlinux.org/title/Firefox/Tweaks#Move_disk_cache_to_RAM) by setting browser.cache.disk.parent_directory to /run/user/1000/firefox
+- Increase [session save interval](https://wiki.archlinux.org/title/Firefox/Tweaks#Longer_interval_between_session_information_record) from the default of 15 seconds (15000 milliseconds) to 30 minutes (1,800,000 milliseconds) by setting browser.sessionstore.interval to 1800000
+- Enable auto [unloading of inactive tabs](https://wiki.archlinux.org/title/Firefox/Tweaks#Automatically_unload_inactive_tabs)
 
 
 ## OPTIONAL

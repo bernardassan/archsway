@@ -2,8 +2,8 @@
 Description=Sync Firefox profile in memory to disk
 
 [Timer]
-OnStartupSec=6h
-OnUnitInactiveSec=12h
+OnStartupSec=1h
+OnUnitInactiveSec=1h
 Persistent=true
 
 [Install]
