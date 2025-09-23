@@ -1,13 +1,12 @@
 # https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfig
 # https://learn.microsoft.com/en-us/community/content/wsl-user-msft-kernel-v6
-
 [wsl2]
 
 # absolute Windows path to a custom Linux kernel.
 # kernel=C:\\Users\\b.assan\\wsl\\bzImage-6.6.75.1-1
 
 # How much memory to assign to the WSL 2 VM, this can be set as whole numbers using GB or MB
-memory=6GB
+memory=12GB
 
 # Sets the amount of swap storage space. Swap storage is disk-based RAM used
 # when memory demand exceeds the limit on the hardware device.
@@ -16,8 +15,8 @@ swap=32GB
 # turn on the output console Window that shows the contents of dmesg upon the start of a WSL
 debugConsole=false
 
-# turn off nested virtualization, disabling other nested VMs to run inside WSL 2
-nestedVirtualization=false
+# https://learn.microsoft.com/en-us/windows/wsl/networking#mirrored-mode-networking
+networkingMode=mirrored
 
 [experimental]
 
