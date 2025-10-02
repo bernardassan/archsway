@@ -115,6 +115,30 @@ if (has-external vivid) {
      set-env LS_COLORS (vivid generate alabaster_dark)
 }
 
+if (os:exists /home/linuxbrew/.linuxbrew/bin/brew) {
+     set-env HOMEBREW_PREFIX /home/linuxbrew/.linuxbrew
+     set-env HOMEBREW_CELLAR /home/linuxbrew/.linuxbrew/Cellar
+     set-env HOMEBREW_REPOSITORY /home/linuxbrew/.linuxbrew/Homebrew
+     append-to-path /home/linuxbrew/.linuxbrew/bin
+     append-to-path /home/linuxbrew/.linuxbrew/sbin
+
+     # When MANPATH starts with :, man uses the manpath command to
+     # automatically discovers man page directories based on what's in your PATH
+     if (has-env MANPATH) {
+          set E:MANPATH = ':'(str:trim-prefix $E:MANPATH ':')
+     }
+
+     if (has-env INFOPATH) {
+          var info_path = /home/linuxbrew/.linuxbrew/share/info:
+          if (not (str:has-prefix $E:INFOPATH $info_path)) {
+               set-env INFOPATH $info_path(put $E:INFOPATH)
+          }
+     } else {
+          set-env INFOPATH /home/linuxbrew/.linuxbrew/share/info:
+     }
+
+}
+
 if (has-external starship) {
      if (is-termux) {
        set E:STARSHIP_CONFIG = $E:DOTFILES/config/starship/termux.toml

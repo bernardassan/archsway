@@ -106,7 +106,8 @@ e_inline_xattr,sb_checksum,compression /dev/sdb2
 ea
 echo (styled warning: red) bumpy road
 ee
-env CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Release -GNinja -DZIG_NO_LIB=ON -DZIG_EXTRA_BUILD_ARGS="--maxrss;7800000000" ..
+env CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Release -DZIG_NO_LIB=ON -DZIG_EXTRA_BUILD_ARGS="--maxrss;7800000000" -GNinja ..
+env CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Release -DZIG_NO_LIB=ON -DZIG_STATIC_LLVM=ON -DZIG_STATIC_ZSTD=ON -DCMAKE_PREFIX_PATH=(brew --p refix llvm@21)";"(brew --prefix lld@21)";"(brew --prefix zstd) -GNinja -S ..
 env RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup rustup update
 eq (uname) Linux
 eval (ssh-agent -t1d)
@@ -396,7 +397,7 @@ zig targets | from-json | put (all)[libc] | order | each { |target| put $target 
 zig targets | jq .libc
 zig test -femit-bin=zigtest src/main.zig
 zig test -fno-llvm -fno-lld file.zig --test-filter funcname
-zig test lib/std/std.zig --zig-lib-dir lib --main-mod-path lib/std --test-filter "BoundedArray"
+zig test lib/std/std.zig --zig-lib-dir lib
 zig test src/main.zig
 zig test src/packed_and_extern_struct.zig
 zig translate-c -lc unique.c > unique.zig
@@ -404,3 +405,4 @@ zig-update
 zig2 build-exe -fPIC -fno-lld -fno-stack-check --verbose-llvm-bc=main.bc -fno-emit-bin main.zig
 zig3 build -p stage4 -Denable-llvm -Dno-lib
 zig3 build -p stage4 -Doptimize=ReleaseFast -Denable-llvm -Dno-lib
+zramctl --output-all

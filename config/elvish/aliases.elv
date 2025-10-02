@@ -358,6 +358,12 @@ fn gcl {|@repo|
 }
 edit:add-var gcl~ $gcl~
 
+fn git-repack {
+  # reduce size of .git
+  # https://stackoverflow.com/a/5613380/12007740
+  git repack -a -d -f --depth=250 --window=250
+}
+
 fn fzt {|@path|
   $E:DOTFILES/fzf/fzt.sh $@path
 }
