@@ -78,7 +78,7 @@ edit:add-var start-river~ $start-river~
 start-river
 
 fn cmdline-history-filter {|command|
-     var ignorelist = [cp mv ln fzt rgf printenv]
+     var ignorelist = [ ]
      for ignore $ignorelist {
           if (str:has-prefix $command $ignore) {
                put $false

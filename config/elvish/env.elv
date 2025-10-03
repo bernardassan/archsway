@@ -167,7 +167,7 @@ fn which {|bin|
                echo $bin_path
           }
      } else {
-          e:which $bin
+          e:which -a $bin
      }
 }
 edit:add-var which~ $which~
