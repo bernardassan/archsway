@@ -1065,9 +1065,7 @@ const Run = struct {
                 .{
                     .mod = &.{.None},
                     .key = .T,
-                    .cmd =
-                    \\'swaynag -t warning -m "Sleepy time?!?!" -b "ZzZz..." "systemctl suspend-then-hibernate" -s "No"'
-                    ,
+                    .cmd = "systemctl suspend-then-hibernate",
                 },
                 .{
                     .mod = &.{.None},
