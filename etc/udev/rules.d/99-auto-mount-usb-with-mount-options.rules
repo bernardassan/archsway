@@ -27,7 +27,7 @@ LABEL="F2FS"
 ENV{ID_USB_DRIVER}=="usb-storage",ATTRS{removable}=="1" \
 , ENV{SYSTEMD_MOUNT_OPTIONS}="defaults,gc_merge,checkpoint_merge,compress_algorithm=zstd:19,atgc" \
 , ENV{SYSTEMD_MOUNT_WHERE}="/media/$env{ID_FS_LABEL}" \
-, RUN+="/bin/systemd-mount -t auto --no-block --discover --fsck=no --collect --owner=firefox $devnode"
+, RUN+="/bin/systemd-mount -t auto --no-block --discover --fsck=no --collect --owner=ultracode $devnode"
 
 GOTO="DONE"
 
@@ -36,7 +36,7 @@ LABEL="NTFS"
 #when ntfs filesystem drive is added
 ENV{ID_USB_DRIVER}=="usb-storage",ATTRS{removable}=="1" \
 , ENV{SYSTEMD_MOUNT_OPTIONS}="defaults,noatime",ENV{SYSTEMD_MOUNT_WHERE}="/media/$env{ID_FS_LABEL}" \
-, RUN+="/bin/systemd-mount -t ntfs3 --no-block --discover --fsck=no --collect --owner=firefox $devnode"
+, RUN+="/bin/systemd-mount -t ntfs3 --no-block --discover --fsck=no --collect --owner=ultracode $devnode"
 
 GOTO="DONE"
 
@@ -45,7 +45,7 @@ LABEL="OTHER_FS"
 #for other filesystems use their defaults
 ENV{ID_USB_DRIVER}=="usb-storage",ATTRS{removable}=="1" \
 , ENV{SYSTEMD_MOUNT_OPTIONS}="defaults,noatime",ENV{SYSTEMD_MOUNT_WHERE}="/media/$env{ID_FS_LABEL}" \
-, RUN+="/bin/systemd-mount -t auto --no-block --discover --fsck=no --collect --owner=firefox $devnode"
+, RUN+="/bin/systemd-mount -t auto --no-block --discover --fsck=no --collect --owner=ultracode $devnode"
 
 LABEL="DONE"
 # vim: ft=udevrules:
