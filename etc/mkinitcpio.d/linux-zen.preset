@@ -6,8 +6,8 @@ ALL_kver="/boot/vmlinuz-linux-zen"
 
 PRESETS=('default' 'fallback')
 
-default_uki="/boot/EFI/Linux/arch-linux-zen.efi"
+default_uki="/efi/EFI/Linux/arch-linux-zen.efi"
 default_options="--splash=/usr/share/systemd/bootctl/splash-arch.bmp --cmdline /etc/kernel/cmdline"
 
-fallback_uki="/boot/EFI/Linux/arch-linux-zen-fallback.efi"
+fallback_uki="/efi/EFI/Linux/arch-linux-zen-fallback.efi"
 fallback_options="-S autodetect --cmdline /etc/kernel/cmdline-fallback"
