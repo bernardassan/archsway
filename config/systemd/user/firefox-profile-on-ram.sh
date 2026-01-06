@@ -7,8 +7,16 @@ function finish() {
 }
 trap finish EXIT ERR
 
+COLOR_RED='\033[0;31m'
+COLOR_RESET='\033[0m' # No Color (Reset)
+
+error_msg() {
+  # Use -e to enable interpretation of backslash escapes
+  echo -e "${COLOR_RED}Error: $1${COLOR_RESET}"  >&2
+}
+
 if ! command -v rsync &>/dev/null; then
-  echo "rsync is needed for firefox profile on ram"
+  error_msg "rsync is needed for firefox profile on ram"
   exit 255
 fi
 
@@ -26,14 +34,22 @@ set -o errtrace
 cd ~/.mozilla/firefox || exit
 
 profile=7ffqcodd.default-release
+static=$profile-static
 
 if ! { test -L $profile || test -d $profile; }; then
-  echo "Firefox profile  $(pwd)${profile} doesn't exist"
-  echo "exec 'find -O3 . -maxdepth 1 \( -type l -or -type d \) -regex ".+release$" | cut --characters 3-' and replace '\$profile' with the result"
-  profile=$(find -O3 . -maxdepth 1 \( -type l -or -type d \) -regex ".+release$" | cut --characters 3-)
+  if test -d $static; then
+    mv "$static" "$profile"
+  else
+    error_msg "Firefox profile  $(pwd)${profile} doesn't exist"
+
+    profile=$(find -O3 . -maxdepth 1 \( -type l -or -type d \) -regex ".+release$" | cut --characters 3-)
+
+    error_msg "The detected profile on your system is ${profile} so replace '\$profile' in the script with this"
+
+    exit 254
+    fi
 fi
 
-static=$profile-static
 volatile=/dev/shm/firefox-$profile-$USER
 
 if ! test -r "$volatile"; then
