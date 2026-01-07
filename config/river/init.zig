@@ -16,7 +16,6 @@ fn fmt(arena: mem.Allocator, comptime fmt_spec: []const u8, args: anytype) []con
 
 const Options = struct {
     terminal: []const u8,
-    wallpaper: []const u8,
     screen_lock: []const u8,
     screenshot_path: []const u8,
     max_volume: f16,
@@ -33,7 +32,6 @@ const Options = struct {
 
         return .{
             .terminal = term,
-            .wallpaper = _wallpaper(arena, HOME),
             .screen_lock = "waylock",
             .screenshot_path = _screenshot_path(arena, HOME),
             // wpctl's -l flag clip volume to 160% == 1.6
@@ -93,52 +91,6 @@ const Options = struct {
             },
         };
     }
-
-    fn _wallpaper(arena: mem.Allocator, HOME: []const u8) []const u8 {
-        const path = fmt(
-            arena,
-            "{[HOME]s}/files/Pictures/Code/",
-            .{ .HOME = HOME },
-        );
-
-        var dir = std.fs.openDirAbsolute(
-            path,
-            .{ .iterate = true },
-        ) catch unreachable;
-        defer dir.close();
-
-        const count = 16;
-        // https://github.com/ziglang/zig/issues/24918
-        // can't use decl literal with catch or orelse
-        var wallpapers = std.ArrayList(
-            []const u8,
-        ).initCapacity(arena, count) catch @panic("OOM");
-
-        var iter = dir.iterate();
-        while (iter.next() catch unreachable) |entry| {
-            wallpapers.appendAssumeCapacity(
-                arena.dupe(u8, entry.name) catch unreachable,
-            );
-        }
-
-        const choosen = fmt(
-            arena,
-            "{[wallpapers_path]s}{[wallpaper]s}",
-            .{
-                .wallpapers_path = path,
-                .wallpaper = shuffle([]const u8, wallpapers.items),
-            },
-        );
-        return choosen;
-    }
-
-    fn shuffle(T: type, items: []T) T {
-        var prng: std.Random.DefaultPrng = .init(@intCast(std.time.timestamp()));
-        const rand = prng.random();
-        rand.shuffle(T, items);
-        const choosen = items[0];
-        return choosen;
-    }
 };
 
 const Run = struct {
@@ -159,19 +111,9 @@ const Run = struct {
             .{ .waylock = self.options.screen_lock },
         );
 
-        const background =
-            fmt(
-                self.arena,
-                "wbg {[wallpaper]s}",
-                .{
-                    .wallpaper = self.options.wallpaper,
-                },
-            );
-
         const autostarts_commands = [_][]const u8{
-            background,
             swayidle,
-            // -- { status_bar }, # don't run status bar on startup
+            // status_bar, // don't run status bar on startup
             "wlsunset -t 700 -l 5.5502 -L -0.2174",
             "wl-paste --watch cliphist store",
             "batsignal -b -e -p -w 35 -c 18 -d 12 -f 85 -m 180 -D systemctl suspend",
@@ -262,11 +204,12 @@ const Run = struct {
     fn oneshot(self: Run) void {
         const oneshot_commands = [_][]const u8{
             "kanshi",
+            "wpaperd -d",
         };
 
         for (oneshot_commands) |command| {
             var cmd = std.mem.splitScalar(u8, command, ' ');
-            const name = cmd.next().?;
+            const name = cmd.first();
 
             run_once(self.arena, name, fmt(
                 self.arena,
@@ -1324,31 +1267,20 @@ const Run = struct {
     }
 
     fn rivertile(r: Run) void {
-        const pid = posix.fork() catch unreachable;
-        if (pid < 0) {
-            // fork failed
-            log.err("fork of river process failed", .{});
-            posix.exit(5);
-        } else if (pid == 0) {
-            // child process
-            // std.posix.setregid
-            process.execv(r.arena, &.{
-                "rivertile",
-                "-view-padding",
-                "0",
-                "-outer-padding",
-                "0",
-                "-main-location",
-                "left",
-                "-main-count",
-                "1",
-                "-main-ratio",
-                "0.6",
-            }) catch unreachable;
-        } else {
-            //running rivertile in background so parent must not call waitpid
-            log.info("rivertile running in the backgroud", .{});
-        }
+        var child: process.Child = .init(&.{
+            "rivertile",
+            "-view-padding",
+            "0",
+            "-outer-padding",
+            "0",
+            "-main-location",
+            "left",
+            "-main-count",
+            "1",
+            "-main-ratio",
+            "0.6",
+        }, r.arena);
+        child.spawn() catch unreachable;
     }
 };
 
@@ -1370,8 +1302,8 @@ pub fn main() !void {
     // https://codeberg.org/river/wiki/pulls/10
     const run: Run = .init(arena, options);
 
-    run.autostart();
     run.oneshot();
+    run.autostart();
     run.configure_input();
     run.river_options();
     run.mappings();
