@@ -1,0 +1,22 @@
+[default]
+duration = "1day"
+mode = "center"
+sorting = "random"
+recursive = true
+
+# Nice Transitions
+# colour-distance
+# directional-wipe
+# doom
+# dreamy
+# fade
+# hexagonalize
+# inverted-page-curl
+# polkan-dots-curtain
+[default.transition.doom]
+
+[any]
+path = "/home/ultracode/files/Pictures/Wallpapers/108.jpg"
+
+[eDP-1]
+path = "/home/ultracode/files/Pictures/Wallpapers"
