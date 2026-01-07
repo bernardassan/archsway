@@ -19,7 +19,9 @@ fn l {|@path|
 }
 edit:add-var l~ $l~
 
-fn Ls {|@files| sudo --preserve-env l $@files }
+fn Ls {|@files|
+  sudo ls --almost-all --format=long --human-readable --inode $@files
+}
 edit:add-var Ls~ $Ls~
 
 set edit:command-abbr["lh"] = "ls --hyperlink"
@@ -27,6 +29,9 @@ set edit:command-abbr["lr"] = "ls --recursive"
 set edit:abbr["less"] = "less -R"
 
 fn md {|@path| mkdir --parents --verbose $@path }
+edit:add-var md~ $md~
+
+fn Md {|@path| sudo mkdir --parents --verbose $@path }
 edit:add-var md~ $md~
 
 fn mc {|path| md $path ; cd $path }
@@ -38,15 +43,17 @@ edit:add-var rd~ $rd~
 fn rm {|@path| e:rm --interactive=once --verbose --recursive $@path }
 edit:add-var rm~ $rm~
 
-fn Rm {|@path| sudo rm $@path }
+fn Rm {|@path| sudo rm --interactive=once --verbose --recursive $@path }
 edit:add-var Rm~ $Rm~
 
 fn ln {|@source destination|
-  e:ln --interactive --symbolic --relative --verbose $@source $destination
+  e:ln --interactive --symbolic --verbose $@source $destination
 }
 edit:add-var ln~ $ln~
 
-fn Ln {|@source destination| sudo ln $@source $destination }
+fn Ln {|@source destination|
+  sudo ln --interactive --symbolic --verbose $@source $destination
+}
 edit:add-var Ln~ $Ln~
 
 fn cp {|@source destination|
@@ -55,7 +62,10 @@ fn cp {|@source destination|
 }
 edit:add-var cp~ $cp~
 
-fn Cp {|@source destination| sudo cp $@source $destination }
+fn Cp {|@source destination|
+  sudo cp --interactive --dereference --recursive --verbose --reflink=auto ^
+  --sparse=auto $@source $destination
+}
 edit:add-var Cp~ $Cp~
 
 fn mv {|@source destination|
@@ -63,7 +73,9 @@ fn mv {|@source destination|
 }
 edit:add-var mv~ $mv~
 
-fn Mv {|@source destination| sudo mv $@source $destination }
+fn Mv {|@source destination|
+  sudo mv --interactive --update --verbose $@source $destination
+}
 edit:add-var Mv~ $Mv~
 
 fn lb {

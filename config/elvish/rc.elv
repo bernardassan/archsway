@@ -43,14 +43,35 @@ fn start-river {|&tty=$false|
              # set XDG_CURRENT_DESKTOP
                set E:XDG_CURRENT_DESKTOP = river
 
-               var deps = [&vivid="for ls colors" &starship="for prompt customization" &carapace="for shell completions"
-               &ghostty="as a terminal" &waylock="for screen lock" &fuzzel="as menu launcher" &swayidle="for wm idle state management"
-               &wbg="for background image" &wlsunset="for night light/blue light management" &cliphist="for clipboard history"
-               &wl-paste="for copy/pasting" &grim="for screenshots" &slurp="for region slection during screenshots"
-               &mpc="for music player keys control" &brightnessctl="for screen brightness control"]
+               var deps = [
+               &ghostty="terminal emulator"
+               &openssh="ssh connectivity"
+               &vivid="ls colors manager"
+               &wl-clipboard="wayland copy/pasting"
+               &rsync="remote/local file syncing"
+               &starship="prompt customization"
+               &git="version control"
+               ]
 
-               var optional_deps = [&batsignal="for battery status notification" &kanshi="for automatic output management"
-               &swaynag="for interactive section" &lswt="for listing wayland windows with their attributes"]
+               var optional_deps = [
+               &mpc="music player keys control"
+               &brightnessctl="for screen brightness control"
+               &carapace-bin="shell completions"
+               &grim="for screenshots"
+               &waylock="for screen lock"
+               &fuzzel="as menu launcher"
+               &swayidle="idle state management"
+               &imv="image viewer"
+               &wpaperd="wayland wallaper daemon"
+               &xdg-desktop-portal-wlr="screen sharing"
+               &wlsunset="for night light/blue light management"
+               &cliphist="for clipboard history"
+               &slurp="for region slection during screenshots"
+               &batsignal="for battery status notification"
+               &kanshi="for automatic output management"
+               &swaynag="for interactive section"
+               &lswt="for listing wayland windows with their attributes"
+               ]
 
                for package [(keys $deps)] {
                     if (not (has-external $package)) {
