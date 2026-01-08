@@ -51,6 +51,16 @@ fn ln {|@source destination|
 }
 edit:add-var ln~ $ln~
 
+fn hln {|@source destination|
+  e:ln --interactive --verbose $@source $destination
+}
+edit:add-var hln~ $hln~
+
+fn Hln {|@source destination|
+  sudo ln --interactive --verbose $@source $destination
+}
+edit:add-var Hln~ $Hln~
+
 fn Ln {|@source destination|
   sudo ln --interactive --symbolic --verbose $@source $destination
 }

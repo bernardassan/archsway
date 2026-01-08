@@ -269,6 +269,7 @@ pylint --help-msg=docstring-first-line-empty
 pylint --list-group
 pylint --list-msgs-enabled
 python -m http.server -b 127.0.0.1 8000 -d zig-out/docs
+qemu-system-x86_64 -enable-kvm -m 2G -bios /usr/share/ovmf/x64/OVMF.4m.fd -kernel mkosi.output/archlinux-rescue_20260107191906.efi -nographic -append "console=ttyS0"
 readlink /bin/rustc
 rename --verbose --interactive build build2 hashing/**
 resolvectl
