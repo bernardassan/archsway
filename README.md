@@ -5,35 +5,37 @@ Archlinux on river/sway from scratch with the most minimal dependencies. DIY is 
 [Arch Linux Installation Guide](https://wiki.archlinux.org/title/Installation_guide)
 
 # Filesystem Setup
-For a new setup, **ROOT** should be a (_xfs_ for hdd | _f2fs_ for nvme) & **HOME**  (_btrfs_ | _bcachefs_) partition.
-**ROOT** is mounted on `/` with the dedicated **HOME** |& **FILES** _subvolume_ | _partition_ mounted to `/home` and `/home/${username}/files` repectively. **ROOT** should have a within **30GiB** - **60GiB**
-with **HOME** between **60-120GiB** and **FILES** of __arbitrary size__ for multimedia content. Setup [**zram**](https://github.com/bernardassan/archsway/blob/master/etc/udev/rules.d/zram.rules) `3x` RAM size to allow running
-more memory hungry tasks `.eg compiling llvm, clang, clang-tools, lldb`. Use a ZRAM backing device equal to RAM size **12GiB** and a [swap](https://github.com/bernardassan/archsway/blob/master/etc/fstab) partition for [**hibernation**](https://github.com/bernardassan/archsway/blob/master/etc/kernel/cmdline) also of size equal to RAM **12Gib**
+- **ESP** [/efi](https://wiki.archlinux.org/title/EFI_system_partition#Create_the_partition) should be 4GiB if you plan on installing [efi applications](https://wiki.archlinux.org/title/Systemd-boot#UEFI_Shells_or_other_EFI_applications) else 512MiB otherwise
+- **ROOT** should be a (_xfs_ for hdd | _f2fs_ for nvme) with a size of **30GiB** - **60GiB**
+- **HOME** & **FILES** (_btrfs_ | _ext4_) partition with **HOME** between **60-120GiB** and **FILES** of __arbitrary size__ for multimedia content
+- **ROOT** is mounted on `/` with the dedicated **HOME** &| **FILES** _subvolume_ | _partition_ mounted to `/home` and `/home/${username}/files` repectively.
+- Setup [**zram**](https://github.com/bernardassan/archsway/blob/master/etc/udev/rules.d/zram.rules) `3x` RAM size to allow running more memory hungry tasks `.eg compiling llvm, clang, clang-tools, lldb`.
+- Use a ZRAM backing device equal to RAM size **12GiB** and a [swap](https://github.com/bernardassan/archsway/blob/master/etc/fstab) partition for [**hibernation**](https://github.com/bernardassan/archsway/blob/master/etc/kernel/cmdline) also of size equal to RAM **12Gib**
 
 **NOTE:**
-- **make sure to create and mount btrfs/bcachefs with zstd compression on first mount during installation**
+- **make sure to create and mount btrfs with zstd compression on first mount during installation**
 - **format & mount all drive with a [logical sector or block size](https://wiki.archlinux.org/title/Advanced_Format) of 4096**
 
 ## needed base system modules
 
-- configure [mkinitcpio](https://github.com/bernardassan/archsway/blob/master/etc/mkinitcpio.conf.d/compression.conf) and kernel [cmdline](https://github.com/bernardassan/archsway/blob/master/etc/kernel/cmdline) parameters
+- Configure mkinitcpio [linux-zen.preset](https://github.com/bernardassan/archsway/blob/master/etc/mkinitcpio.d/linux-zen.preset) to generate a efi uki image
+- Use [/efi](https://wiki.archlinux.org/title/EFI_system_partition#Typical_mount_points) as ESP partition and set systemd-boot [loader.conf](https://github.com/bernardassan/archsway/blob/master/efi/loader/loader.conf) to your efi uki (unified kernel image) image
+- Extend mkinitcpio image generation with zstd [compression](https://github.com/bernardassan/archsway/blob/master/etc/mkinitcpio.conf.d/compression.conf) and add kernel [cmdline](https://github.com/bernardassan/archsway/blob/master/etc/kernel/cmdline) parameters
 - Enable systemd-boot as boot manager (`bootctl install`)
-- Start iwd, systemd-networkd, systemd-resolved system services
-- enabling systemd-boot-update service to update systemd-boot on systemd upgrade
-- river/sway as window manager with swayidle and waylock for idle and lock management and levee/yambar for bar management
+- Enable iwd, systemd-networkd, systemd-resolved system services
+- Enabling systemd-boot-update service to update systemd-boot on systemd upgrade
+- river/sway as window manager with swayidle and waylock for idle and lock
+  management and levee/yambar for bar management
     - base
-    - xfsprogs | f2fs-tools
-    - btrfs-progs | bcachefs-tools
-    - dosfstools | exfatprogs
+    - xfsprogs | f2fs-tools | btrfs-progs | dosfstools | exfatprogs
     - intel-ucode microcode
     - iwd for wifi
-    - kitty/foot terminal
+    - ghostty/kitty/foot terminal
     - Install only needed linux-firmware, check firmwares you might need with `lspci` and [use dynamic debug](https://wiki.archlinux.org/title/Linux_firmware#Detecting_loaded_firmware) to know more details about the exact firmwares loaded at kernel startup
     - linux-zen
-    - mesa for opengl
     - intel-media-driver for hardware video acceleration
     - polkit for seat and privileged access management
-    - man-db [man-pages](https://wiki.archlinux.org/title/Man_page)
+    - man-db and [man-pages](https://wiki.archlinux.org/title/Man_page) and enable man-db.timer service
     - Setup GPG with SSH authentication enabled
     - helix/neovim for config clone [awesome-helix](https://github.com/bernardassan/awesome-helix.git) to $XDG_CONFIG_HOME/helix or [awesome-neovim](https://github.com/bernardassan/awesome-neovim.git) to $XDG_CONFIG_HOME/nvim
     - sudo
@@ -143,7 +145,6 @@ Options=mode=1777,strictatime,nosuid,nodev,size=90%%,nr_inodes=1m
 - Checkout [Archlinux General Recommendation](https://wiki.archlinux.org/title/Firefox/Profile_on_RAM#Place_profile_in_RAM_manually)
 - enable DNSOverTLS for resolved
 - Enable synchronizing the system clock across the network by enabling [systemd-timesyncd.service](https://wiki.archlinux.org/title/Systemd-timesyncd)
-- disable unneeded services that run at boot like man-db.timer and mask ldconfig.service,systemd-rfkill*
 - disable journaling to persistent storage by setting Storage in journal.conf to volatile and masking systemd-journal-flush.service
 - link kitty to xterm
 - Enable DNS over HTTPS in firefox
