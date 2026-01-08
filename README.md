@@ -5,7 +5,7 @@ Archlinux on river/sway from scratch with the most minimal dependencies. DIY is 
 [Arch Linux Installation Guide](https://wiki.archlinux.org/title/Installation_guide)
 
 # Filesystem Setup
-- **ESP** [/efi](https://wiki.archlinux.org/title/EFI_system_partition#Create_the_partition) should be 4GiB if you plan on installing [efi applications](https://wiki.archlinux.org/title/Systemd-boot#UEFI_Shells_or_other_EFI_applications) else 512MiB otherwise
+- **ESP** [/efi](https://wiki.archlinux.org/title/EFI_system_partition#Create_the_partition) should be 2GiB if you plan on installing [efi applications](https://wiki.archlinux.org/title/Systemd-boot#UEFI_Shells_or_other_EFI_applications) like [arch rescue](https://codeberg.org/bernardassan/arch-rescue-image) else 512MiB otherwise
 - **ROOT** should be a (_xfs_ for hdd | _f2fs_ for nvme) with a size of **30GiB** - **60GiB**
 - **HOME** & **FILES** (_btrfs_ | _ext4_) partition with **HOME** between **60-120GiB** and **FILES** of __arbitrary size__ for multimedia content
 - **ROOT** is mounted on `/` with the dedicated **HOME** &| **FILES** _subvolume_ | _partition_ mounted to `/home` and `/home/${username}/files` repectively.
