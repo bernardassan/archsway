@@ -20,6 +20,7 @@ LABEL=ROOT / xfs rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota 0 1
 # /dev/sda3 UUID=26caab6b-923e-4276-a36d-248e5619bda1
 LABEL=HOME /home btrfs rw,relatime,space_cache=v2,compress=zstd:12,autodefrag,commit=300,subvolid=5,subvol=/,x-systemd.automount 0 0
 
-#https://wiki.archlinux.org/title/Ext4#Improving_performance
+# https://wiki.archlinux.org/title/Ext4#Improving_performance
+# Enable fast_commit for improved performance
 # /dev/sda6 UUID=be0eb394-aaa3-4324-a024-2b07568a9659
 LABEL=FILES	/home/ultracode/files ext4 rw,relatime,commit=300,data=writeback,journal_async_commit,x-systemd.automount	0 0
