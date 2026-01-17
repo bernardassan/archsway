@@ -170,7 +170,12 @@ If you want to compile [AUR](https://wiki.archlinux.org/title/Arch_User_Reposito
 
 ## WSL
 
-Install [ArchWSL](https://github.com/yuk7/ArchWSL) using [scoop](https://scoop.sh/) on windows 11. After installing using scoop follow these [instructions](https://wsldl-pg.github.io/ArchW-docs/How-to-Setup/#setup-after-install) to setup ArchWSL.
+Install [ArchLinux WSL](https://archlinux.org/download/) on Windows 11 using `wsl --install archlinux`. After installing, follow these [instructions](https://wiki.archlinux.org/title/Install_Arch_Linux_on_WSL) to set up ArchLinux on WSL 2.
+- Download and install a Nerd Font of your choosing, like [IosevkaTerm](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/IosevkaTerm/IosevkaTermNerdFontMono-Medium.ttf) and use as your defalt font for Windows Terminal
+- Install starship `winget install -e --id Starship.Starship` and add `Invoke-Expression (&starship init powershell)` to your $PROFILE as in [Microsoft.PowerShell_profile](https://github.com/bernardassan/archsway/tree/master/wsl/WindowsPowerShell/Microsoft.PowerShell_profile.ps1)
+- Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` in Powershell to enable running of scripts
+
+## Using a custom build wsl kernel
 - To compile WSL kernel you need `base-devel`, `bc`, `cpio`, `pahole`, `python`, `rsync`
 - Then set `swap=32GB` in .wslconfig to ensure you can compile the kernel without running out of memory
 - Run `zcat /proc/config.gz | /bin/sed '/is not set/d' > .config` to get a copy of all the set config used by the current wsl kernel
