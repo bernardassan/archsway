@@ -179,6 +179,7 @@ Install [ArchLinux WSL](https://archlinux.org/download/) on Windows 11 using `ws
 - Set a password for your new user with `passwd username`
 - To set a different host name, disable hostname generation, and set a static hostname in [wsl.conf](https://github.com/bernardassan/archsway/blob/899d464762fead2b17995e2fa8ba06942cc369cf/wsl/etc/wsl.conf#L6)
 - Configure [sudoers](https://github.com/bernardassan/archsway/tree/master/etc/sudoers.d) file at /etc/sudoers.d/`username`
+- clone this repo to `~/.config/dotfiles` and symlink `~/.config/dotfiles/config/elvish` to `~/.config/`[`elvish`](https://github.com/bernardassan/archsway/tree/main/config/elvish) to activate the elvish shell configuration
 
 ## Using a custom build WSL kernel
 - To compile the WSL kernel, you need `base-devel`, `bc`, `cpio`, `pahole`, `python`, and `rsync`.
