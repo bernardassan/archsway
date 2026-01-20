@@ -175,6 +175,7 @@ Install [ArchLinux WSL](https://archlinux.org/download/) on Windows 11 using `ws
 - Install starship `winget install -e --id Starship.Starship` and add `Invoke-Expression (&starship init powershell)` to your $PROFILE as in [Microsoft.PowerShell_profile](https://github.com/bernardassan/archsway/tree/master/wsl/WindowsPowerShell/Microsoft.PowerShell_profile.ps1)
 - Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` in PowerShell to enable running of scripts
 - To set a different host name, disable hostname generation, and set a static hostname in [wsl.conf](https://github.com/bernardassan/archsway/blob/899d464762fead2b17995e2fa8ba06942cc369cf/wsl/etc/wsl.conf#L6)
+- Configure [sudoers](https://github.com/bernardassan/archsway/tree/master/etc/sudoers.d) file at /etc/sudoers.d/`username`
 
 ## Using a custom build WSL kernel
 - To compile the WSL kernel, you need `base-devel`, `bc`, `cpio`, `pahole`, `python`, and `rsync`.
