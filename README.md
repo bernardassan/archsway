@@ -174,6 +174,9 @@ Install [ArchLinux WSL](https://archlinux.org/download/) on Windows 11 using `ws
 - Download and install a Nerd Font of your choosing, like [IosevkaTerm](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/IosevkaTerm/IosevkaTermNerdFontMono-Medium.ttf) and use it as your default font for Windows Terminal
 - Install starship `winget install -e --id Starship.Starship` and add `Invoke-Expression (&starship init powershell)` to your $PROFILE as in [Microsoft.PowerShell_profile](https://github.com/bernardassan/archsway/tree/master/wsl/WindowsPowerShell/Microsoft.PowerShell_profile.ps1)
 - Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` in PowerShell to enable running of scripts
+- Add the wheel group `groupadd -f wheel` as it isn't available by default in Archlinux WSL
+- create a non-root user and add him to the wheel group `useradd -mG wheel -s /bin/elvish username`
+- Set a password for your new user with `passwd username`
 - To set a different host name, disable hostname generation, and set a static hostname in [wsl.conf](https://github.com/bernardassan/archsway/blob/899d464762fead2b17995e2fa8ba06942cc369cf/wsl/etc/wsl.conf#L6)
 - Configure [sudoers](https://github.com/bernardassan/archsway/tree/master/etc/sudoers.d) file at /etc/sudoers.d/`username`
 
