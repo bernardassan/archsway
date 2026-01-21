@@ -150,6 +150,32 @@ Options=mode=1777,strictatime,nosuid,nodev,size=90%%,nr_inodes=1m
 - Enable DNS over HTTPS in Firefox
 - modify relector configuration in /etc/xdg/reflector/reflector.conf to sort based on download rate with --sort rate
 
+## WSL
+
+Install [ArchLinux WSL](https://archlinux.org/download/) on Windows 11 using `wsl --install archlinux`. After installing, follow these [instructions](https://wiki.archlinux.org/title/Install_Arch_Linux_on_WSL) to set up ArchLinux on WSL 2.
+- Download and install a Nerd Font of your choosing, like [IosevkaTerm](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/IosevkaTerm/IosevkaTermNerdFontMono-Medium.ttf) and use it as your default font for Windows Terminal
+- Install starship `winget install -e --id Starship.Starship` and add `Invoke-Expression (&starship init powershell)` to your $PROFILE as in [Microsoft.PowerShell_profile](https://github.com/bernardassan/archsway/tree/master/wsl/WindowsPowerShell/Microsoft.PowerShell_profile.ps1)
+- Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` in PowerShell to enable running of scripts
+- Add the wheel group `groupadd -f wheel` as it isn't available by default in Archlinux WSL
+- create a non-root user and add him to the wheel group `useradd -mG wheel -s /bin/elvish username`
+- Set a password for your new user with `passwd username`
+- To set a different host name, disable hostname generation, and set a static hostname in [wsl.conf](https://github.com/bernardassan/archsway/blob/899d464762fead2b17995e2fa8ba06942cc369cf/wsl/etc/wsl.conf#L6)
+- Configure [sudoers](https://github.com/bernardassan/archsway/tree/master/etc/sudoers.d) file at /etc/sudoers.d/`username`
+- clone this repo to `~/.config/dotfiles` and symlink `~/.config/dotfiles/config/elvish` to `~/.config/`[`elvish`](https://github.com/bernardassan/archsway/tree/main/config/elvish) to activate the elvish shell configuration
+- Configure [makepkg](https://github.com/bernardassan/archsway/tree/main/etc/makepkg.conf.d) and [pacman](https://github.com/bernardassan/archsway/tree/main/etc/pacman.d)
+
+## Using a custom build WSL kernel
+- To compile the WSL kernel, you need `base-devel`, `bc`, `cpio`, `pahole`, `python`, and `rsync`.
+- Then set `swap=32GB` in .wslconfig to ensure you can compile the kernel without running out of memory
+- Run `zcat /proc/config.gz | /bin/sed '/is not set/d' > .config` to get a copy of all the set config used by the current WSL kernel
+- Run `env KCONFIG_CONFIG=Microsoft/config-wsl ./scripts/kconfig/merge_config.sh .config` to merge `.config` with `Microsoft/config-wsl`, overriding options in `Microsoft/config-wsl`.
+- Then `env KCONFIG_CONFIG=Microsoft/config-wsl make olddefconfig` or `env KCONFIG_CONFIG=Microsoft/config-wsl make oldconfig` to use default values for new kernel configs not in `$E:KCONFIG_CONFIG`.
+- ensure CONFIG_TUN=y and CONFIG_TAP=y are set in Microsoft/config-wsl to enable [userspace networking](https://www.kernel.org/doc/html/latest/networking/tuntap.html) used by podman and VPNs
+- Use mold `set-env LD mold` to link faster, this reduced the whole compile/link phase from about 1hr30min to 30min for me
+- follow instructions at [updating wsl kernel](https://learn.microsoft.com/en-us/community/content/wsl-user-msft-kernel-v6)
+- At the end, you should have a [.wslconfig](https://github.com/bernardassan/archsway/blob/master/wsl/wslconfig) like mine
+
+
 ## TERMUX
 To use [pacman](https://wiki.archlinux.org/title/Pacman) as the package manager for [Termux](https://termux.dev/en/) follow these [instructions](https://wiki.termux.com/wiki/Switching_package_manager)
 If you want to compile [AUR](https://wiki.archlinux.org/title/Arch_User_Repository) packages follow these [instructions](https://wiki.termux.com/wiki/AUR)
@@ -167,27 +193,3 @@ If you want to compile [AUR](https://wiki.archlinux.org/title/Arch_User_Reposito
 - git
 - helix
 - man
-
-## WSL
-
-Install [ArchLinux WSL](https://archlinux.org/download/) on Windows 11 using `wsl --install archlinux`. After installing, follow these [instructions](https://wiki.archlinux.org/title/Install_Arch_Linux_on_WSL) to set up ArchLinux on WSL 2.
-- Download and install a Nerd Font of your choosing, like [IosevkaTerm](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/IosevkaTerm/IosevkaTermNerdFontMono-Medium.ttf) and use it as your default font for Windows Terminal
-- Install starship `winget install -e --id Starship.Starship` and add `Invoke-Expression (&starship init powershell)` to your $PROFILE as in [Microsoft.PowerShell_profile](https://github.com/bernardassan/archsway/tree/master/wsl/WindowsPowerShell/Microsoft.PowerShell_profile.ps1)
-- Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` in PowerShell to enable running of scripts
-- Add the wheel group `groupadd -f wheel` as it isn't available by default in Archlinux WSL
-- create a non-root user and add him to the wheel group `useradd -mG wheel -s /bin/elvish username`
-- Set a password for your new user with `passwd username`
-- To set a different host name, disable hostname generation, and set a static hostname in [wsl.conf](https://github.com/bernardassan/archsway/blob/899d464762fead2b17995e2fa8ba06942cc369cf/wsl/etc/wsl.conf#L6)
-- Configure [sudoers](https://github.com/bernardassan/archsway/tree/master/etc/sudoers.d) file at /etc/sudoers.d/`username`
-- clone this repo to `~/.config/dotfiles` and symlink `~/.config/dotfiles/config/elvish` to `~/.config/`[`elvish`](https://github.com/bernardassan/archsway/tree/main/config/elvish) to activate the elvish shell configuration
-
-## Using a custom build WSL kernel
-- To compile the WSL kernel, you need `base-devel`, `bc`, `cpio`, `pahole`, `python`, and `rsync`.
-- Then set `swap=32GB` in .wslconfig to ensure you can compile the kernel without running out of memory
-- Run `zcat /proc/config.gz | /bin/sed '/is not set/d' > .config` to get a copy of all the set config used by the current WSL kernel
-- Run `env KCONFIG_CONFIG=Microsoft/config-wsl ./scripts/kconfig/merge_config.sh .config` to merge `.config` with `Microsoft/config-wsl`, overriding options in `Microsoft/config-wsl`.
-- Then `env KCONFIG_CONFIG=Microsoft/config-wsl make olddefconfig` or `env KCONFIG_CONFIG=Microsoft/config-wsl make oldconfig` to use default values for new kernel configs not in `$E:KCONFIG_CONFIG`.
-- ensure CONFIG_TUN=y and CONFIG_TAP=y are set in Microsoft/config-wsl to enable [userspace networking](https://www.kernel.org/doc/html/latest/networking/tuntap.html) used by podman and VPNs
-- Use mold `set-env LD mold` to link faster, this reduced the whole compile/link phase from about 1hr30min to 30min for me
-- follow instructions at [updating wsl kernel](https://learn.microsoft.com/en-us/community/content/wsl-user-msft-kernel-v6)
-- At the end, you should have a [.wslconfig](https://github.com/bernardassan/archsway/blob/master/wsl/wslconfig) like mine
