@@ -163,6 +163,8 @@ Install [ArchLinux WSL](https://archlinux.org/download/) on Windows 11 using `ws
 - Configure [sudoers](https://github.com/bernardassan/archsway/tree/master/etc/sudoers.d) file at /etc/sudoers.d/`username`
 - clone this repo to `~/.config/dotfiles` and symlink `~/.config/dotfiles/config/elvish` to `~/.config/`[`elvish`](https://github.com/bernardassan/archsway/tree/main/config/elvish) to activate the elvish shell configuration
 - Configure [makepkg](https://github.com/bernardassan/archsway/tree/main/etc/makepkg.conf.d) and [pacman](https://github.com/bernardassan/archsway/tree/main/etc/pacman.d)
+- Install yay for AUR management with `mkdir ~/aur ; cd ~/aur ; sudo pacman -S --needed git base-devel ; git clone https://aur.archlinux.org/yay-bin.git ; cd yay-bin ; makepkg -si`
+- Install essential utilities like `man-db`, `man-pages', `carapace-bin`, `bat` and `fzf`
 
 ## Using a custom build WSL kernel
 - To compile the WSL kernel, you need `base-devel`, `bc`, `cpio`, `pahole`, `python`, and `rsync`.
