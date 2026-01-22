@@ -46,8 +46,25 @@ edit:add-var rm~ $rm~
 fn Rm {|@path| sudo rm --interactive=once --verbose --recursive $@path }
 edit:add-var Rm~ $Rm~
 
-fn ln {|@source destination|
-  e:ln --interactive --symbolic --verbose $@source $destination
+fn full-path {|path|
+  path:abs (os:eval-symlinks $path)
+}
+
+fn is-full-path {|path|
+  try {
+    os:exists (full-path $path)
+  } catch err {
+    put $false
+  }
+}
+
+fn ln {|@sources destination|
+  for path $sources {
+    if (not (is-full-path $path)) {
+      fail "`"$path"` is not an absolute path"
+    }
+  }
+  e:ln --interactive --relative --symbolic --verbose $@sources $destination
 }
 edit:add-var ln~ $ln~
 
@@ -62,7 +79,7 @@ fn Hln {|@source destination|
 edit:add-var Hln~ $Hln~
 
 fn Ln {|@source destination|
-  sudo ln --interactive --symbolic --verbose $@source $destination
+  sudo ln --interactive --relative --symbolic --verbose $@source $destination
 }
 edit:add-var Ln~ $Ln~
 
