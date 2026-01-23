@@ -150,8 +150,9 @@ go install src.elv.sh/cmd/elvish@master
 gpg --expert --edit-key "Ultra Code"
 gpg --expert --full-generate-key "Ultra Code"
 gpg --export --armor --output public-key.asc "Ultra Code"
-gpg --export-secret-keys "Ultra Code" | gpg --list packets
+gpg --export-secret-key --armor --output sc.primary.privatekey.asc 0x19D751EDA224BA6F! # export private master key without subkeys
 gpg --export-secret-keys --armor --output private-key.asc "Ultra Code"
+gpg --export-secret-subkey --armor --output e.private.subkey.asc 0x215E15AC4B3EA9ED! # export private subkey without the secret key of master (only master public key and ! strips unnecessary info)
 gpg --export-ssh-key "Ultra Code"
 gpg --gen-revoke --armor --output revoke-cert.asc "Ultra Code"
 gpg --import privake-key.asc
@@ -159,6 +160,7 @@ gpg --keyserver keys.openpgp.org --recv-keys CA7C2C7A30C8E8E1274A847651C67305FFC
 gpg --keyserver-options auto-key-retrieve --verify archlinux-2024.03.01-x86_64.iso.sig archlinux-2024.03.01-x86_64.iso
 gpg --list-keys --fingerprint 06BC317B515ACE7C
 gpg --list-keys --with-keygrip
+gpg --list-packets e.private.subkey.asc # see what exactly has been exported
 gpg --list-secret-keys --keyid-format=long
 gpg --list-secret-keys --with-subkey-fingerprint
 gpg --symmetric --s2k-cipher-algo AES256 --s2k-digest-algo SHA512 --s2k-count 65536 altgpgkeys.gz
