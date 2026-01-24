@@ -16,6 +16,30 @@ if (not (os:is-dir $E:GNUPGHOME)) {
      os:mkdir-all &perm=0o700 $E:GNUPGHOME
 }
 
+# Use XDG Base Directory for bash
+if (not (os:is-dir $E:XDG_CONFIG_HOME/bash)) {
+     os:mkdir-all $E:XDG_CONFIG_HOME/bash
+     if (os:exists $E:HOME/.bashrc) {
+          os:rename $E:HOME/.bashrc $E:XDG_CONFIG_HOME/bash/bashrc
+     }
+     if (os:exists $E:HOME/.bash_profile) {
+          os:rename $E:HOME/.bash_profile $E:XDG_CONFIG_HOME/bash/bash_profile
+     }
+     if (os:exists $E:HOME/.bash_login) {
+          os:rename $E:HOME/.bash_login $E:XDG_CONFIG_HOME/bash/bash_login
+     }
+     if (os:exists $E:HOME/.bash_logout) {
+          os:rename $E:HOME/.bash_logout $E:XDG_CONFIG_HOME/bash/bash_logout
+     }
+}
+set-env HISTFILE $E:XDG_STATE_HOME/bash/bash_history
+if (not (os:is-dir $E:XDG_STATE_HOME/bash)) {
+     os:mkdir-all $E:XDG_STATE_HOME/bash
+     if (os:exists $E:HOME/.bash_history) {
+          os:rename $E:HOME/.bash_history $E:HISTFILE
+     }
+}
+
 set-env DOTFILES (put $E:XDG_CONFIG_HOME | path:join (all) dotfiles)
 set E:ELVRC = $E:DOTFILES/config/elvish
 
