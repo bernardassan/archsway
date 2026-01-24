@@ -164,7 +164,7 @@ fn update-zig {|branch tarball basename new_zig_exe install_dir_link zig_version
 
 var usage = ^
 'Usage:
-zvm [-install master | 0.14.0 | 0.13.0] [-default]
+zvm [-install master | 0.15.2 | 0.14.1] [-default]
 '
 
 fn main {|&install=master &set=master &default=$false|
@@ -181,5 +181,5 @@ fn main {|&install=master &set=master &default=$false|
 }
 
 fn zvm {|@args|
-    flag:call $main~ [$@args] &on-parse-error={|_| print $usage; fail "`zvm called with incorrect arguments"}
+    flag:call $main~ [$@args] &on-parse-error={|_| print $usage; fail "zvm called with incorrect arguments"}
 }

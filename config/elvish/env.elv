@@ -84,6 +84,7 @@ if (is-wsl) {
      set paths = [/usr/local/sbin /usr/local/bin /usr/bin ~/.local/bin]
      # https://github.com/yuk7/ArchWSL/issues/389#issuecomment-2683928012
      set-env GALLIUM_DRIVER d3d12
+     set-env LIBVA_DRIVER_NAME d3d12
 } else {
      append-to-path ~/.local/bin
 }
