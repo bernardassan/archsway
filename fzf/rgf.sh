@@ -23,7 +23,7 @@ function finish() {
 }
 trap finish EXIT SIGINT ERR SIGTERM
 
-RG_PREFIX="grep --extended-regexp --color=always --recursive --line-number --binary-files=without-match --exclude='.*' --exclude-dir='.git' --exclude-dir='*cache*' --ignore-case $path --regexp"
+RG_PREFIX="env LC_ALL=C grep --perl-regexp --color=always --line-number --binary-files=without-match --devices=skip --exclude='.*' --exclude-dir='.[a-zA-Z0-9]*' --exclude-dir='*cache*' --exclude-dir={zig-out,node_modules,build,dist,target,vendor,__pycache__} --ignore-case --recursive $path --regexp"
 # Assign elements from index 2 onwards with default empty array
 INITIAL_QUERY="${*:2}"
 : | fzf --ansi --disabled --query "$INITIAL_QUERY" \

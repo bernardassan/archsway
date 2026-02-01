@@ -154,7 +154,7 @@ fn diff {|file reference|
 edit:add-var diff~ $diff~
 
 fn grep {|@regex|
-  e:grep --extended-regexp --color=always --ignore-case $@regex
+  env LC_ALL=C grep --perl-regexp --color=always --line-number --binary-files=without-match --devices=skip --exclude='.*' --exclude-dir='.[a-zA-Z0-9]*' --exclude-dir='*cache*' --exclude-dir={zig-out node_modules build dist target vendor __pycache__} --ignore-case $@regex
 }
 edit:add-var grep~ $grep~
 
