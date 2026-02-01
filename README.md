@@ -166,6 +166,7 @@ Install [ArchLinux WSL](https://archlinux.org/download/) on Windows 11 using `ws
 - Install yay for AUR management with `mkdir ~/aur ; cd ~/aur ; sudo pacman -S --needed git base-devel ; git clone https://aur.archlinux.org/yay-bin.git ; cd yay-bin ; makepkg -si`
 - Setup [locale](https://wiki.archlinux.org/title/Installation_guide#Localization) as appropriate 
 - Install essential utilities like `xdg-utils`, `openssh`, `man-db`, `man-pages', `carapace-bin`, `bat` and `fzf`
+- Configure `pacman` with [pacman.d/pacman.conf](https://github.com/bernardassan/archsway/blob/main/etc/pacman.d/pacman.conf) and disable/comment out `NoProgressBar` if it is enabled in your `/etc/pacman.conf`
 
 ## Using a custom build WSL kernel
 - To compile the WSL kernel, you need `base-devel`, `bc`, `cpio`, `pahole`, `python`, and `rsync`.
