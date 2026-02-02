@@ -40,6 +40,11 @@ if (not (os:is-dir $E:XDG_STATE_HOME/bash)) {
      }
 }
 
+set-env WINEPREFIX (put $E:XDG_DATA_HOME | path:join (all) wineprefixes/default)
+if (not (os:is-dir $E:WINEPREFIX)) {
+     os:mkdir-all $E:WINEPREFIX
+}
+
 set-env DOTFILES (put $E:XDG_CONFIG_HOME | path:join (all) dotfiles)
 set E:ELVRC = $E:DOTFILES/config/elvish
 
