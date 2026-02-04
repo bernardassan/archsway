@@ -158,17 +158,6 @@ fn grep {|@regex|
 }
 edit:add-var grep~ $grep~
 
-# implement underline for grep
-# https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
-# https://github.com/kovidgoyal/kitty/blob/master/kittens/hyperlinked_grep/main.go
-# https://sw.kovidgoyal.net/kitty/kittens/hints/
-# fn mg {|@args|
-#   kitten hyperlinked_grep --smart-case $@args
-# }
-# edit:add-var mg~ $mg~
-fn icat {|file| kitten icat $file }
-edit:add-var icat~ $icat~
-
 # respects gitignore and skip hidden files and cache directories
 fn rg {|regex @options|
   var @gitignore = (if (os:exists .gitignore) { cat .gitignore } else { echo })
@@ -179,9 +168,21 @@ fn rg {|regex @options|
 }
 edit:add-var rg~ $rg~
 
+# implement underline for grep
+# https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
+# https://github.com/kovidgoyal/kitty/blob/master/kittens/hyperlinked_grep/main.go
+# https://sw.kovidgoyal.net/kitty/kittens/hints/
+# fn mg {|@args|
+#   kitten hyperlinked_grep --smart-case $@args
+# }
+# edit:add-var mg~ $mg~
+
 fn sed {|regex file| e:sed --regexp-extended --in-place=.bak ^
         --expression=$regex $file }
 edit:add-var sed~ $sed~
+
+fn icat {|file| kitten icat $file }
+edit:add-var icat~ $icat~
 
 fn sort-inplace {|file|
   order < $file | compact | to-lines stdout> $E:PREFIX/tmp/sort
