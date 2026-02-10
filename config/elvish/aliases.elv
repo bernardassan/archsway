@@ -154,7 +154,18 @@ fn diff {|file reference|
 edit:add-var diff~ $diff~
 
 fn grep {|@regex|
-  env LC_ALL=C grep --perl-regexp --color=always --line-number --binary-files=without-match --devices=skip --exclude='.*' --exclude-dir='.[a-zA-Z0-9]*' --exclude-dir='*cache*' --exclude-dir={zig-out node_modules build dist target vendor __pycache__} --ignore-case $@regex
+  if (has-external rg) {
+    e:rg  --engine=auto --mmap --no-unicode --smart-case $@regex
+  } elif ?(e:git rev-parse --is-inside-work-tree >/dev/null 2>&1) {
+    env LC_ALL=C git grep --perl-regexp --line-number --column --break ^
+    --heading --ignore-case $@regex
+  } else {
+    env LC_ALL=C grep --perl-regexp --color=always --line-number ^
+    --binary-files=without-match --devices=skip --exclude='.*' ^
+    --exclude-dir='.[a-zA-Z0-9]*' --exclude-dir='*cache*' ^
+    --exclude-dir={zig-out node_modules build dist target vendor __pycache__} ^
+    --ignore-case $@regex
+  }
 }
 edit:add-var grep~ $grep~
 
