@@ -163,7 +163,7 @@ fn grep {|@regex|
     env LC_ALL=C grep --perl-regexp --color=always --line-number ^
     --binary-files=without-match --devices=skip --exclude='.*' ^
     --exclude-dir='.[a-zA-Z0-9]*' --exclude-dir='*cache*' ^
-    --exclude-dir={zig-out node_modules build dist target vendor __pycache__} ^
+    --exclude-dir={zig-out zig-pkg node_modules build dist target vendor __pycache__} ^
     --ignore-case $@regex
   }
 }
@@ -419,11 +419,6 @@ fn fzt {|@path|
   $E:DOTFILES/fzf/fzt.sh $@path
 }
 edit:add-var fzt~ $fzt~
-
-fn rgf {|@path|
-  $E:DOTFILES/fzf/rgf.sh $@path
-}
-edit:add-var rgf~ $rgf~
 
 fn Hx {|@files| sudo --preserve-env $E:EDITOR $@files }
 edit:add-var Hx~ $Hx~
