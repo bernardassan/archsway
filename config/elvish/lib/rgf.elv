@@ -7,7 +7,7 @@ use path
 
 fn cleanup {|result|
   rm -f /tmp/rg-fzf-{r,f} stderr>$os:dev-null
-  if (not (eq $result 0)) { exit $result}
+  if (not (eq $result 0)) { fail "exit with "$result }
 }
 
 fn grep-cmd {|path|
@@ -41,7 +41,6 @@ fn rgf {|@args|
 
     var argc = (count $args)
 
-    put "count "$argc
     if (> $argc 0) {
         set path = $args[0]
         if (not (or (path:is-dir $path) (path:is-regular $path))) {
