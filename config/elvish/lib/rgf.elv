@@ -7,26 +7,58 @@ use path
 
 fn cleanup {|result|
   rm -f /tmp/rg-fzf-{r,f} stderr>$os:dev-null
-  if (not (eq $result 0)) { fail "exit with "$result }
+  if (not (eq $result 0)) { fail "exited with "$result }
 }
 
 fn grep-cmd {|path|
-    var cmd = [
-        env
-        LC_ALL=C
-        grep
-        --perl-regexp
-        --color=always
-        --line-number
-        --binary-files=without-match
-        --devices=skip
-        --exclude='''.*'''
-        --exclude-dir={'''.[a-zA-Z0-9]*''' '''*cache*''' zig-out zig-pkg node_modules build dist target vendor __pycache__}
-        --ignore-case
-        --recursive
-        '"'$path'"'
-        --regexp
-    ]
+    var cmd = []
+    if (has-external rg) {
+        set cmd = [
+          rg
+          --engine=auto
+          --mmap
+          --no-unicode
+          --smart-case
+          --color=always
+          --column
+          --no-heading
+          --line-number
+          '"'$path'"'
+          --regexp
+        ]
+    } elif ?(e:git rev-parse --is-inside-work-tree stdout>$os:dev-null stderr>&stdout) {
+    # TODO: git doesn't support having `pattern` at the end when path is
+    # specified .ie `git grep directory/ "pattern"`
+        set cmd = [
+            env
+            LC_ALL=C
+            git
+            grep
+            --untracked
+            --perl-regexp
+            --color=always
+            --line-number
+            --column
+            --ignore-case
+        ]
+    } else {
+        set cmd = [
+            env
+            LC_ALL=C
+            grep
+            --perl-regexp
+            --color=always
+            --line-number
+            --binary-files=without-match
+            --devices=skip
+            --exclude='''.*'''
+            --exclude-dir={'''.[a-zA-Z0-9]*''' '''*cache*''' zig-out zig-pkg node_modules build dist target vendor __pycache__}
+            --ignore-case
+            --recursive
+            '"'$path'"'
+            --regexp
+        ]
+    }
     put (str:join " " $cmd)
 }
 
