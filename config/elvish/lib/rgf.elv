@@ -3,7 +3,6 @@
 # Switch between Ripgrep launcher mode (CTRL-R) and fzf filtering mode (CTRL-F)
 use str
 use os
-use flag
 use path
 
 fn cleanup {|result|

@@ -2,6 +2,15 @@ use store
 use path
 use os
 
+# user modules
+use zvm
+use rgf
+use sh
+
+edit:add-var zvm~ $zvm:zvm~
+edit:add-var rgf~ $rgf:rgf~
+edit:add-var display-power-options~ $sh:display_power_options~
+
 set edit:insert:binding[Alt-l] = { edit:clear }
 
 fn el { exec elvish }

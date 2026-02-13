@@ -6,7 +6,6 @@ use unix
 
 use ./env
 use ./aliases
-use ./modules
 
 if ($env:is-wsl~) {
      # remove resource limits on core file generation
