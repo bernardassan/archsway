@@ -188,7 +188,7 @@ fn grep {|regex @options|
     } else {
       # Input is a Pipe (|) or a Redirected File (<)
       if (has-external rg) {
-        e:rg  --engine=auto --mmap --no-unicode --smart-case $regex $@options
+        e:rg  --engine=auto --no-unicode --smart-case $regex $@options
       } else {
         env LC_ALL=C grep --perl-regexp --color=always --ignore-case ^
         --regexp $regex $@options
