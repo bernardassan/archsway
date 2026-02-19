@@ -213,8 +213,9 @@ set-env EDITOR (
 # Configure gpg pinentry to use the correct TTY
 set-env GPG_TTY (tty)
 
-if (not (has-env SSH_AUTH_SOCK)) {
-     if (has-external gpgconf) {
+if (has-external gpgconf) {
+     gpg-connect-agent updatestartuptty /bye stdout>$os:dev-null
+     if (not (has-env SSH_AUTH_SOCK)) {
           set-env SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
      }
 }

@@ -1,6 +1,7 @@
 use store
 use path
 use os
+use file
 
 # user modules
 use zvm
@@ -162,31 +163,39 @@ fn diff {|file reference|
 }
 edit:add-var diff~ $diff~
 
-fn grep {|@regex|
-  if (has-external rg) {
-    e:rg  --engine=auto --mmap --no-unicode --smart-case $@regex
-  } elif ?(e:git rev-parse --is-inside-work-tree >/dev/null 2>&1) {
-    env LC_ALL=C git grep --perl-regexp --line-number --column --break ^
-    --heading --ignore-case $@regex
-  } else {
-    env LC_ALL=C grep --perl-regexp --color=always --line-number ^
-    --binary-files=without-match --devices=skip --exclude='.*' ^
-    --exclude-dir='.[a-zA-Z0-9]*' --exclude-dir='*cache*' ^
-    --exclude-dir={zig-out zig-pkg node_modules build dist target vendor __pycache__} ^
-    --ignore-case $@regex
-  }
+fn grep {|regex @options|
+    # Check if the current processes stdin is a terminal or pipe
+    if (file:is-tty 0) {
+       # Input is from a Terminal (>)
+      if (has-external rg) {
+        e:rg  --engine=auto --mmap --no-unicode --smart-case $regex $@options
+      } elif (and (has-external git) ?(e:git rev-parse --is-inside-work-tree stdout>$os:dev-null stderr>&stdout)) {
+        env LC_ALL=C git grep --perl-regexp --line-number --column --break ^
+        --heading --ignore-case -e $regex $@options
+      } elif (has-external git) {
+        env LC_ALL=C git grep --perl-regexp --no-index --line-number --column ^
+        --break --heading --ignore-case -e $regex $@options
+      } else {
+        var @gitignore = (if (os:exists .gitignore) { cat .gitignore } else { echo ' ' })
+        echo "'"$@gitignore"'"
+        env LC_ALL=C grep --perl-regexp --color=always --line-number ^
+        --binary-files=without-match --devices=skip --exclude='.*' ^
+        --exclude-dir='.[a-zA-Z0-9]*' --exclude-dir='*cache*' ^
+        --exclude-dir={zig-out zig-pkg node_modules build dist target vendor __pycache__} ^
+        --exclude={$@gitignore} --exclude-dir={$@gitignore} --recursive --ignore-case ^
+        --regexp $regex $@options
+      }
+    } else {
+      # Input is a Pipe (|) or a Redirected File (<)
+      if (has-external rg) {
+        e:rg  --engine=auto --mmap --no-unicode --smart-case $regex $@options
+      } else {
+        env LC_ALL=C grep --perl-regexp --color=always --ignore-case ^
+        --regexp $regex $@options
+      }
+    }
 }
 edit:add-var grep~ $grep~
-
-# respects gitignore and skip hidden files and cache directories
-fn rg {|regex @options|
-  var @gitignore = (if (os:exists .gitignore) { cat .gitignore } else { echo })
-  e:grep --perl-regexp --only-matching --color=always --ignore-case ^
-  --line-number --recursive --binary-files=without-match --exclude=".*" ^
-  --exclude=$@gitignore --exclude-dir=$@gitignore --exclude-dir=".git" ^
-  --exclude-dir="*cache*" --regexp $regex $@options
-}
-edit:add-var rg~ $rg~
 
 # implement underline for grep
 # https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
