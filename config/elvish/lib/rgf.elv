@@ -26,7 +26,7 @@ fn grep-cmd {|path|
           '"'$path'"'
           --regexp
         ]
-    } elif ?(e:git rev-parse --is-inside-work-tree stdout>$os:dev-null stderr>&stdout) {
+    } elif (and (has-external git) ?(e:git rev-parse --is-inside-work-tree stdout>$os:dev-null stderr>&stdout)) {
     # TODO: git doesn't support having `pattern` at the end when path is
     # specified .ie `git grep directory/ "pattern"`
         set cmd = [
@@ -36,6 +36,19 @@ fn grep-cmd {|path|
             grep
             --untracked
             --perl-regexp
+            --color=always
+            --line-number
+            --column
+            --ignore-case
+        ]
+    } elif (has-external git) {
+        set cmd = [
+            env
+            LC_ALL=C
+            git
+            grep
+            --perl-regexp
+            --no-index
             --color=always
             --line-number
             --column
