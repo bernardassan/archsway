@@ -410,8 +410,8 @@ fn gst {
 }
 edit:add-var gst~ $gst~
 
-fn gp {
-  git push
+fn gp {|@options|
+  git push $@options
 }
 edit:add-var gp~ $gp~
 

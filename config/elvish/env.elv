@@ -214,7 +214,7 @@ set-env EDITOR (
 set-env GPG_TTY (tty)
 
 if (has-external gpgconf) {
-     gpg-connect-agent updatestartuptty /bye stdout>$os:dev-null
+     gpg-connect-agent updatestartuptty /bye stdout>$os:dev-null stderr>&stdout
      if (not (has-env SSH_AUTH_SOCK)) {
           set-env SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
      }

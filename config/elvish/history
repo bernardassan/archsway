@@ -396,6 +396,7 @@ zig fetch --save 'git+https://github.com/bernardassan/tardy#zig-0.15.1'
 zig fetch --save 'git+https://github.com/bernardassan/tardy?ref=zig-0.15.1#bf3b9b8a1bbbdab83e3ee536ad3152b7dfe04758'
 zig fetch --save https://github.com/bernardassan/tardy/archive/bf3b9b8a1bbbdab83e3ee536ad3152b7dfe04758.tar.gz
 zig fetch --save=zig-gobject git+https://github.com/ianprime0509/zig-gobject.git
+zig fetch --save=glib2 https://github.com/GNOME/glib/archive/refs/tags/2.87.3.tar.gz
 zig targets | from-json | put (all)[libc] | order | each { |target| put $target } (all)
 zig targets | jq .libc
 zig test -femit-bin=zigtest src/main.zig
@@ -406,6 +407,5 @@ zig test src/packed_and_extern_struct.zig
 zig translate-c -lc unique.c > unique.zig
 zig-update
 zig2 build-exe -fPIC -fno-lld -fno-stack-check --verbose-llvm-bc=main.bc -fno-emit-bin main.zig
-zig3 build -p stage4 -Denable-llvm -Dno-lib
-zig3 build -p stage4 -Doptimize=ReleaseFast -Denable-llvm -Dno-lib
+zig4 build -p stage4 -Doptimize=ReleaseFast -Denable-llvm -Dno-lib
 zramctl --output-all
