@@ -242,6 +242,7 @@ php -S localhost:8000 -t src/
 php artisan serve &
 ping 102.211.186.199 -c 4
 pkg-config --cflags --libs glfw3
+pkg-config --cflags --libs libpcre2-8
 pkill --signal KILL pueued
 podman --log-level=debug run -it -v (pwd):/backend -w /backend --rm --security-opt seccomp=unconfined cgr.dev/chainguard/wolfi-base:latest sh
 podman run -itd --privileged --env-file .env --security-opt seccomp=unconfined -v .:/server -w /server --name outer-containers docker.io/library/alpine:edge sh
@@ -387,6 +388,7 @@ zgrep CONFIG_ZRAM_MULTI_COMP /proc/config.gz
 zig build -Dno-bin -fincremental --watch run --verbose --summary all -- samples/image.avif
 zig build -Dtarget=x86_64-linux-gnu.2.34
 zig build -Dtarget=x86_64-linux-musl -Doptimize=ReleaseSafe
+zig build docs
 zig build install --prefix ~/.local -Doptimize=ReleaseFast --summary all
 zig build test --summary all
 zig build-exe -fno-llvm -fno-lld -target aarch64-linux --show-builtin
@@ -395,8 +397,9 @@ zig build-exe -lc unique.zig
 zig fetch --save 'git+https://github.com/bernardassan/tardy#zig-0.15.1'
 zig fetch --save 'git+https://github.com/bernardassan/tardy?ref=zig-0.15.1#bf3b9b8a1bbbdab83e3ee536ad3152b7dfe04758'
 zig fetch --save https://github.com/bernardassan/tardy/archive/bf3b9b8a1bbbdab83e3ee536ad3152b7dfe04758.tar.gz
-zig fetch --save=zig-gobject git+https://github.com/ianprime0509/zig-gobject.git
 zig fetch --save=glib2 https://github.com/GNOME/glib/archive/refs/tags/2.87.3.tar.gz
+zig fetch --save=zig-gobject git+https://github.com/ianprime0509/zig-gobject.git
+zig std -p 11111 &
 zig targets | from-json | put (all)[libc] | order | each { |target| put $target } (all)
 zig targets | jq .libc
 zig test -femit-bin=zigtest src/main.zig
