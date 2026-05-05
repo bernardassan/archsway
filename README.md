@@ -152,21 +152,20 @@ Options=mode=1777,strictatime,nosuid,nodev,size=90%%,nr_inodes=1m
 
 ## WSL
 
-Install [ArchLinux WSL](https://archlinux.org/download/) on Windows 11 using `wsl --install archlinux`. After installing, follow these [instructions](https://wiki.archlinux.org/title/Install_Arch_Linux_on_WSL) to set up ArchLinux on WSL 2.
+- Install [ArchLinux WSL](https://archlinux.org) on Windows 11 using `wsl --install archlinux`. After installing, follow these [instructions](https://wiki.archlinux.org/title/Install_Arch_Linux_on_WSL) to set up Arch Linux on WSL 2.
 - Download and install a Nerd Font of your choosing, like [IosevkaTerm](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/IosevkaTerm/IosevkaTermNerdFontMono-Medium.ttf) and use it as your default font for Windows Terminal
 - Install starship `winget install -e --id Starship.Starship` and add `Invoke-Expression (&starship init powershell)` to your $PROFILE as in [Microsoft.PowerShell_profile](https://github.com/bernardassan/archsway/tree/master/wsl/WindowsPowerShell/Microsoft.PowerShell_profile.ps1)
 - Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` in PowerShell to enable running of scripts
-- Add the wheel group `groupadd -f wheel` as it isn't available by default in Archlinux WSL
-- create a non-root user and add him to the wheel group `useradd -mG wheel -s /bin/elvish username`
-- Set a password for your new user with `passwd username`
-- To set a different host name, disable hostname generation, and set a static hostname in [wsl.conf](https://github.com/bernardassan/archsway/blob/899d464762fead2b17995e2fa8ba06942cc369cf/wsl/etc/wsl.conf#L6)
+- Create a non-root user `useradd -m username` and set a password for your new user with `passwd username`
+- Add him to the wheel group `usermod -aG wheel username -s /bin/elvish`
 - Configure [sudoers](https://github.com/bernardassan/archsway/tree/master/etc/sudoers.d) file at /etc/sudoers.d/`username`
-- clone this repo to `~/.config/dotfiles` and symlink `~/.config/dotfiles/config/elvish` to `~/.config/`[`elvish`](https://github.com/bernardassan/archsway/tree/main/config/elvish) to activate the elvish shell configuration
-- Configure [makepkg](https://github.com/bernardassan/archsway/tree/main/etc/makepkg.conf.d) and [pacman](https://github.com/bernardassan/archsway/tree/main/etc/pacman.d)
-- Install yay for AUR management with `mkdir ~/aur ; cd ~/aur ; sudo pacman -S --needed git base-devel ; git clone https://aur.archlinux.org/yay-bin.git ; cd yay-bin ; makepkg -si`
+- To set a different host name, disable hostname generation, and set a static hostname in [wsl.conf](https://github.com/bernardassan/archsway/blob/899d464762fead2b17995e2fa8ba06942cc369cf/wsl/etc/wsl.conf#L6)
+- Clone this repo to _~/.config/dotfiles_ with `mkdir -p ~/.config ; cd ~/.config ; git clone https://github.com/bernardassan/archsway.git dotfiles` and symlink _~/.config/dotfiles/config/elvish_ to _~/.config/_[_elvish_](https://github.com/bernardassan/archsway/tree/main/config/elvish) .ie `ln -s ~/.config/dotfiles/config/elvish ~/.config/elvish` to activate the elvish shell configuration
+- Configure _pacman_ with [pacman.d/pacman.conf](https://github.com/bernardassan/archsway/blob/main/etc/pacman.d/pacman.conf) and disable/comment out **NoProgressBar** if it is enabled in your _/etc/pacman.conf_
+- Configure [makepkg](https://github.com/bernardassan/archsway/tree/main/etc/makepkg.conf.d) so that fetching git repos is efficient and compilations are optimized, and well-compressed, while debug builds aren't generated
+- Install yay for AUR management with `mkdir ~/.aur ; cd ~/.aur ; sudo pacman -S --needed git base-devel ; git clone https://aur.archlinux.org/yay-bin.git ; cd yay-bin ; makepkg -si`
 - Setup [locale](https://wiki.archlinux.org/title/Installation_guide#Localization) as appropriate 
-- Install essential utilities like `xdg-utils`, `openssh`, `man-db`, `man-pages', `carapace-bin`, `bat` and `fzf`
-- Configure `pacman` with [pacman.d/pacman.conf](https://github.com/bernardassan/archsway/blob/main/etc/pacman.d/pacman.conf) and disable/comment out `NoProgressBar` if it is enabled in your `/etc/pacman.conf`
+- Install essential utilities like `xdg-utils`, `openssh`, `man-db`, `man-pages`, `carapace-bin`, `bat`, and `fzf`.
 
 ## Using a custom build WSL kernel
 - To compile the WSL kernel, you need `base-devel`, `bc`, `cpio`, `pahole`, `python`, and `rsync`.
