@@ -41,6 +41,6 @@ Cp etc/makepkg.conf.d/makepkg.conf /etc/makepkg.conf.d/makepkg.conf
 
 # TODO: Integrate Turmux setup config (ADD PEFIXES)
 ln config/gnupg/* $E:XDG_CONFIG_HOME/gnupg/
-ln git/ ~/.config/
+ln config/git/ ~/.config/
 ln -s ~/.config/dotfiles/elvish/ ~/.config/elvish
 ln -s mimeapps.list $E:XDG_CONFIG_HOME
