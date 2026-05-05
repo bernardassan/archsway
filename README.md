@@ -153,10 +153,11 @@ Options=mode=1777,strictatime,nosuid,nodev,size=90%%,nr_inodes=1m
 ## WSL
 
 - Install [ArchLinux WSL](https://archlinux.org) on Windows 11 using `wsl --install archlinux`. After installing, follow these [instructions](https://wiki.archlinux.org/title/Install_Arch_Linux_on_WSL) to set up Arch Linux on WSL 2.
-- Download and install a Nerd Font of your choosing, like [IosevkaTerm](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/IosevkaTerm/IosevkaTermNerdFontMono-Medium.ttf) and use it as your default font for Windows Terminal
+- Download and install a Nerd Font of your choosing, like [IosevkaTerm](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/IosevkaTerm/IosevkaTermNerdFontMono-Medium.ttf) and use it as your default font face for Windows Terminal, and change color scheme to _one half dark_
 - Install starship `winget install -e --id Starship.Starship` and add `Invoke-Expression (&starship init powershell)` to your $PROFILE as in [Microsoft.PowerShell_profile](https://github.com/bernardassan/archsway/tree/master/wsl/WindowsPowerShell/Microsoft.PowerShell_profile.ps1)
 - Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` in PowerShell to enable running of scripts
-- Create a non-root user `useradd -m username` and set a password for your new user with `passwd username`
+- Create a non-root user `useradd -m username` and set a password for root with `passwd root` and your new user with `passwd username`
+- Set the default wsl user with `wsl --manage archlinux --set-default-user username`
 - Add him to the wheel group `usermod -aG wheel username -s /bin/elvish`
 - Configure [sudoers](https://github.com/bernardassan/archsway/tree/master/etc/sudoers.d) file at /etc/sudoers.d/`username`
 - To set a different host name, disable hostname generation, and set a static hostname in [wsl.conf](https://github.com/bernardassan/archsway/blob/899d464762fead2b17995e2fa8ba06942cc369cf/wsl/etc/wsl.conf#L6)
@@ -165,7 +166,7 @@ Options=mode=1777,strictatime,nosuid,nodev,size=90%%,nr_inodes=1m
 - Configure [makepkg](https://github.com/bernardassan/archsway/tree/main/etc/makepkg.conf.d) so that fetching git repos is efficient and compilations are optimized, and well-compressed, while debug builds aren't generated
 - Install yay for AUR management with `mkdir ~/.aur ; cd ~/.aur ; sudo pacman -S --needed git base-devel ; git clone https://aur.archlinux.org/yay-bin.git ; cd yay-bin ; makepkg -si`
 - Setup [locale](https://wiki.archlinux.org/title/Installation_guide#Localization) as appropriate 
-- Install essential utilities like `xdg-utils`, `openssh`, `man-db`, `man-pages`, `carapace-bin`, `bat`, and `fzf`.
+- Install essential utilities like `xdg-utils`, `man-db`, `man-pages`, `carapace-bin`, `openssh`, `bat`, and `fzf`.
 
 ## Using a custom build WSL kernel
 - To compile the WSL kernel, you need `base-devel`, `bc`, `cpio`, `pahole`, `python`, and `rsync`.
