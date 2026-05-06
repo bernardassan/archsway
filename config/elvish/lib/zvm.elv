@@ -29,8 +29,10 @@ var ZIG_ROOT = $E:HOME/.local/zig
 var BIN_DIR = $E:XDG_LOCAL_HOME/bin
 var TMPDIR = $E:PREFIX/tmp/zvm
 var ZIG_JSON_URL = https://ziglang.org/download/index.json
-var ARCH = (arch)
 var INDEX = $TMPDIR/index.json
+var ZIG_MIRRORS_URL = https://ziglang.org/download/community-mirrors.txt
+var MIRRORS = $TMPDIR/mirrors.txt
+var ARCH = (arch)
 
 fn start {
     if (not (os:is-dir $ZIG_ROOT)) {
@@ -53,6 +55,7 @@ fn extract-info {|branch|
     if (or (not (os:is-regular $INDEX)) (eq ?(cat $INDEX | slurp) '') (str:contains (check-index | slurp) $INDEX)) {
         try {
             curl -s $ZIG_JSON_URL stdout>$INDEX
+            curl -s $ZIG_MIRRORS_URL stdout>$MIRRORS
         } catch err {
             fail "curl failed to download the zig index.json\nrm "$INDEX" and try `zvm` again\nEnsure you have a working internet connection"
         }
@@ -113,8 +116,11 @@ fn download-zig {|tarball basename new_zig_exe install_dir_link zig_version|
         bsdtar --directory $ZIG_ROOT --extract --xz --file $TMPDIR/$basename
         update-symlink $new_zig_exe $install_dir_link $zig_version
     } catch err {
+        echo (styled "Error: failed to update Zig Version to "$basename"!" red)
+        echo (styled "try using one of the mirrors in "$MIRRORS yellow)
+        echo (styled "Eg. `curl -L -o /tmp/zvm/"$basename" "https://zigmirror.hryx.net/zig/$basename'`' yellow)
+        print (styled (cat $MIRRORS | slurp) yellow)
         put $err
-        echo (styled "Error: update failed!" red)
         os:remove-all $ZIG_ROOT/$zig_version
     }
 }
