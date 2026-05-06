@@ -62,7 +62,8 @@ coredumpctl debug
 coredumpctl dump
 coredumpctl info
 coredumpctl list
-curl -L -# -o pretty-php.phar https://github.com/lkrms/pretty-php/releases/latest/download/pretty-php.phar
+curl -L -o pretty-php.phar https://github.com/lkrms/pretty-php/releases/latest/download/pretty-php.phar
+curl -LO https://github.com/mattn/efm-langserver/releases/download/v0.0.56/efm-langserver_v0.0.56_linux_amd64.tar.gz
 curl -O https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
 curl -sLO https://github.com/Vexu/arocc/pull/878.patch
 curl icanhazip.com
@@ -108,6 +109,7 @@ echo (styled warning: red) bumpy road
 ee
 env CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Release -DZIG_NO_LIB=ON -DZIG_EXTRA_BUILD_ARGS="--maxrss;7800000000" -GNinja ..
 env CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Release -DZIG_NO_LIB=ON -DZIG_STATIC_LLVM=ON -DZIG_STATIC_ZSTD=ON -DCMAKE_PREFIX_PATH=(brew --p refix llvm@21)";"(brew --prefix lld@21)";"(brew --prefix zstd) -GNinja -S ..
+env GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2 git pull # debug git
 env RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup rustup update
 eq (uname) Linux
 eval (ssh-agent -t1d)
@@ -305,8 +307,10 @@ scp kekele:"firewalld.rules.conf*" serverdotfiles
 scp ~/serverdotfiles/nftables.new.conf kekele:nftables.conf
 sea-orm-cli generate entity -o entity_dir --with-serde deserialize --with-prelude=all-allow-unused-imports
 sea-orm-cli migrate generate table_name --universal-time
+sort-inplace config/elvish/history
 ss --tcp --udp --listening --processes --numeric
 ssh -G localhost
+ssh -vvvT git@github.com # debug github ssh issues
 ssh kekele -L 127.0.0.1:8080:102.211.186.199:63333 -N
 ssh kekele@102.211.186.199 -p 62226
 ssh kekele@102.211.186.199 -p 62226 -L 127.0.0.1:3333:102.211.186.199:63333 -N

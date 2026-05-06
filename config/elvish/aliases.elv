@@ -81,15 +81,15 @@ fn ln {|@sources destination|
 }
 edit:add-var ln~ $ln~
 
-fn hln {|@source destination|
+fn lnh {|@source destination|
   e:ln --interactive --verbose $@source $destination
 }
-edit:add-var hln~ $hln~
+edit:add-var lnh~ $lnh~
 
-fn Hln {|@source destination|
+fn Lnh {|@source destination|
   sudo ln --interactive --verbose $@source $destination
 }
-edit:add-var Hln~ $Hln~
+edit:add-var Lnh~ $Lnh~
 
 fn Ln {|@source destination|
   sudo ln --interactive --relative --symbolic --verbose $@source $destination
