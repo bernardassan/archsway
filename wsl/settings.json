@@ -5,6 +5,7 @@
     "alwaysOnTop": false,
     "alwaysShowNotificationIcon": false,
     "autoHideWindow": false,
+    "compatibility.enableUnfocusedAcrylic": false,
     "copyFormatting": "none",
     "copyOnSelect": false,
     "defaultProfile": "{50d6d17d-a5ab-5664-9d89-6e4043a70b5a}",
@@ -69,7 +70,7 @@
                 "name": "archlinux",
                 "opacity": 90,
                 "padding": "0",
-                "scrollbarState": "hidden",
+                "scrollbarState": "visible",
                 "source": "Microsoft.WSL",
                 "useAcrylic": false
             }
