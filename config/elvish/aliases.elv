@@ -426,7 +426,13 @@ edit:add-var gpu~ $gpu~
 fn gcl {|@repo|
   # https://stackoverflow.com/questions/17714159/how-do-i-undo-a-single-branch-clone/60846265#60846265
   # https://stackoverflow.com/questions/11552437/git-pull-remote-branch-cannot-find-remote-ref/67200162#67200162
-  git clone --filter=tree:0 $@repo
+  # use --filter=tree:0 for build environments where the repository will be
+  # deleted after a single build, but you still need access to commit history
+  # as trees and blobs would be fetched on demand
+  # use --depth=1 --single-branch --branch= for a situation like the above but
+  # you don't need access to commit history as this limits the git commands
+  # that can be used in the repo
+  git clone --filter=blob:none $@repo
 }
 edit:add-var gcl~ $gcl~
 
