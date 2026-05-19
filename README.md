@@ -181,9 +181,9 @@ Options=mode=1777,strictatime,nosuid,nodev,size=90%%,nr_inodes=1m
 
 
 ## TERMUX
-To use [pacman](https://wiki.archlinux.org/title/Pacman) as the package manager for [Termux](https://termux.dev/en/) follow these [instructions](https://wiki.termux.com/wiki/Switching_package_manager)
-If you want to compile [AUR](https://wiki.archlinux.org/title/Arch_User_Repository) packages follow these [instructions](https://wiki.termux.com/wiki/AUR)
-If you face any issues with pacman, refer to [Pacman Troubleshooting](https://wiki.archlinux.org/title/Pacman#Troubleshooting)
+- To use [pacman](https://wiki.archlinux.org/title/Pacman) as the package manager for [Termux](https://termux.dev/en/) follow these [instructions](https://wiki.termux.com/wiki/Switching_package_manager)
+- If you want to compile [AUR](https://wiki.archlinux.org/title/Arch_User_Repository) packages follow these [instructions](https://wiki.termux.com/wiki/AUR)
+- If you face any issues with pacman, refer to [Pacman Troubleshooting](https://wiki.archlinux.org/title/Pacman#Troubleshooting)
 - openssl-tool
 - openssh
 - zig
