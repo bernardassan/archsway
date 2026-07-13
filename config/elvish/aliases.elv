@@ -398,8 +398,12 @@ fn gl {|@commit_hash|
 }
 edit:add-var gl~ $gl~
 
-fn glp {
-  git log -p
+fn glp {|@commit_hash|
+  if (eq $commit_hash []) {
+    git log --patch-with-stat
+  } else {
+    git log --patch-with-stat --reverse $@commit_hash..
+  }
 }
 edit:add-var glp~ $glp~
 

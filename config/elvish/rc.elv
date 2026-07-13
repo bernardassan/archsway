@@ -28,6 +28,11 @@ if ($env:is-wsl~) {
        }
      }
      edit:add-var enable-coredump~ $enable-coredump~
+
+     fn enable-ptrace {
+       echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+     }
+     edit:add-var enable-ptrace~ $enable-ptrace~
 }
 
 # elvish limited vi editing mode

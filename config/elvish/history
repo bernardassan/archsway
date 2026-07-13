@@ -111,6 +111,7 @@ env CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Release -DZIG_NO_LIB=ON -DZIG_
 env CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Release -DZIG_NO_LIB=ON -DZIG_STATIC_LLVM=ON -DZIG_STATIC_ZSTD=ON -DCMAKE_PREFIX_PATH=(brew --p refix llvm@21)";"(brew --prefix lld@21)";"(brew --prefix zstd) -GNinja -S ..
 env GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2 git pull # debug git
 env RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup rustup update
+env WINEDEBUG=+ntdll,+ioctl wine ai_poll.exe 2>&1
 eq (uname) Linux
 eval (ssh-agent -t1d)
 exec
@@ -247,9 +248,10 @@ pkg-config --cflags --libs glfw3
 pkg-config --cflags --libs libpcre2-8
 pkill --signal KILL pueued
 podman --log-level=debug run -it -v (pwd):/backend -w /backend --rm --security-opt seccomp=unconfined cgr.dev/chainguard/wolfi-base:latest sh
+podman compose down --remove-orphans
+podman compose down --volumes
+podman run --rm -it localhost/imgrecog_api:latest sh
 podman run -itd --privileged --env-file .env --security-opt seccomp=unconfined -v .:/server -w /server --name outer-containers docker.io/library/alpine:edge sh
-podman-compose down --remove-orphans
-podman-compose down --volumes
 poetry add jupyterlab
 poetry add pytest --group dev
 poetry config --list
@@ -392,14 +394,19 @@ zgrep CONFIG_ZRAM_MULTI_COMP /proc/config.gz
 zig build -Dno-bin -fincremental --watch run --verbose --summary all -- samples/image.avif
 zig build -Dtarget=x86_64-linux-gnu.2.34
 zig build -Dtarget=x86_64-linux-musl -Doptimize=ReleaseSafe
+zig build -fincremental --watch
+zig build -fincremental --webui='[::]:42801' --time-report
 zig build docs
 zig build install --prefix ~/.local -Doptimize=ReleaseFast --summary all
 zig build test --summary all
+zig build test -Dskip-release -Dskip-non-native --summary line
+zig build test-std -Dno-matrix --summary all
 zig build-exe -fno-llvm -fno-lld -target aarch64-linux --show-builtin
 zig build-exe -lc -cflags -std=c2y -D_XOPEN_SOURCE=800 -- -target x86_64-linux-gnu -freference-trace=7 main.c allocator.zig
 zig build-exe -lc unique.zig
 zig fetch --save 'git+https://github.com/bernardassan/tardy#zig-0.15.1'
 zig fetch --save 'git+https://github.com/bernardassan/tardy?ref=zig-0.15.1#bf3b9b8a1bbbdab83e3ee536ad3152b7dfe04758'
+zig fetch --save 'https://github.com/tardy-org/tardy/archive/refs/heads/main.tar.gz'
 zig fetch --save https://github.com/bernardassan/tardy/archive/bf3b9b8a1bbbdab83e3ee536ad3152b7dfe04758.tar.gz
 zig fetch --save=glib2 https://github.com/GNOME/glib/archive/refs/tags/2.87.3.tar.gz
 zig fetch --save=zig-gobject git+https://github.com/ianprime0509/zig-gobject.git
@@ -408,7 +415,7 @@ zig targets | from-json | put (all)[libc] | order | each { |target| put $target 
 zig targets | jq .libc
 zig test -femit-bin=zigtest src/main.zig
 zig test -fno-llvm -fno-lld file.zig --test-filter funcname
-zig test lib/std/std.zig --zig-lib-dir lib
+zig test lib/std/std.zig --zig-lib-dir lib --test-filter IoUring
 zig test src/main.zig
 zig test src/packed_and_extern_struct.zig
 zig translate-c -lc unique.c > unique.zig
