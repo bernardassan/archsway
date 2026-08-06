@@ -30,6 +30,9 @@
 	signOff = true
 [merge]
 	conflictStyle = diff3
+	ff = false
+	branchdesc = true
+	log = 1024
 [rerere]
 	enabled = true
 [mergetool]
