@@ -21,19 +21,20 @@ fn el { exec elvish }
 edit:add-var el~ $el~
 
 fn ls {|@options_and_path|
-  e:ls --color=always --hyperlink=always --classify $@options_and_path
+  e:ls --color=always --hyperlink=always --classify ^
+    --almost-all --format=long --human-readable --inode --ignore-backups ^
+    $@options_and_path
 }
 edit:add-var ls~ $ls~
 
 fn l {|@path|
   var @gitignore = (if (os:exists .gitignore) { cat .gitignore } else { echo })
-  ls --almost-all --format=long --human-readable --inode --ignore-backups ^
-  --ignore=.git --ignore=$@gitignore $@path
+  ls --ignore=.git --ignore=$@gitignore $@path
 }
 edit:add-var l~ $l~
 
 fn Ls {|@files|
-  sudo ls --almost-all --format=long --human-readable --inode $@files
+  sudo ls $@files
 }
 edit:add-var Ls~ $Ls~
 
