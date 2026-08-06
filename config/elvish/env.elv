@@ -124,6 +124,10 @@ if (or (has-external rustup) (has-external rustc) (os:is-dir $E:XDG_LOCAL_HOME/c
      if (os:is-dir $rustup_rust_analyzer) { append-to-path $rustup_rust_analyzer }
 }
 
+if (or (has-external zig) (os:is-dir $E:XDG_LOCAL_HOME/zig)) {
+     set-env ZIG_BUILD_SUMMARY (put all)
+}
+
 if (has-external bun) {
      var bun_path  = (put $E:XDG_CACHE_HOME/.bun/bin)
      append-to-path $bun_path
