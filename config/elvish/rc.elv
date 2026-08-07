@@ -7,6 +7,9 @@ use unix
 use ./env
 use ./aliases
 
+# elvish limited vi editing mode
+set edit:insert:binding[Ctrl-'['] = $edit:command:start~
+
 if ($env:is-wsl~) {
      # remove resource limits on core file generation
      if (has-key $unix:rlimits[core] cur) {
@@ -34,9 +37,6 @@ if ($env:is-wsl~) {
      }
      edit:add-var enable-ptrace~ $enable-ptrace~
 }
-
-# elvish limited vi editing mode
-set edit:insert:binding[Ctrl-'['] = $edit:command:start~
 
 # Automatically run river window manager on virtual terminal tty 1-3
 # On other ttys you must run manually with the tty option
