@@ -77,7 +77,6 @@ set-env QT_STYLE_OVERRIDE 'adwaita-dark'
 # apropos -r '.*' or whatis -r '.*' # list of all man pages
 set-env MANSECT '2,3,3p,2const,2type,3const,3head,3type,0,0p,8,5,1,1p,4,9,7,6'
 set-env MANROFFOPT '-c'
-set-env MANPAGER $runtime:elvish-path" -c 'col --no-backspaces --spaces | bat -l man --plain'"
 
 # Setup debuginfo daemon for packages in the official repositories
 if (os:is-regular $E:PREFIX/etc/debuginfod/archlinux.urls) {

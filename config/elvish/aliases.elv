@@ -510,3 +510,13 @@ edit:add-var a2l~ $a2l~
 
 fn objdump {|exe| e:objdump -dSrwC -Mintel $exe }
 edit:add-var objdump~ $objdump~
+
+fn man {|@args|
+    if (has-external mandb) {
+      e:man $@args | col --no-backspaces --spaces | bat -l man --plain
+    } else {
+      e:man -O width=(tput cols) $@args | col --no-backspaces --spaces^
+       | bat -l man --plain
+    }
+}
+edit:add-var man~ $man~
