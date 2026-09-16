@@ -148,7 +148,14 @@ if (or (has-external rustup) (has-external rustc) (os:is-dir $E:XDG_LOCAL_HOME/c
      if (os:is-dir $rustup_rust_analyzer) { append-to-path $rustup_rust_analyzer }
 }
 
-if (or (has-external zig) (os:is-dir $E:XDG_LOCAL_HOME/zig)) {
+if (not (has-external zig)) {
+     if (put ?(os:exists $E:HOME/repos/zig/build/stage4/bin/zig)) {
+          append-to-path $E:HOME/repos/zig/build/stage4/bin
+     } elif (put ?(os:exists $E:HOME/repos/zig/build/stage3/bin/zig)) {
+          append-to-path $E:HOME/repos/zig/build/stage3/bin
+     }
+}
+if (has-external zig) {
      set-env ZIG_BUILD_SUMMARY (put all)
 }
 
