@@ -1,7 +1,11 @@
 use store
+use math
+use str
 use path
 use os
 use file
+
+use ./env
 
 # user modules
 use zvm
@@ -520,3 +524,24 @@ fn man {|@args|
     }
 }
 edit:add-var man~ $man~
+
+fn zig {|@args|
+  var zig_bin = ""
+    if (put ?(os:exists $E:HOME/repos/zig/build/stage4/bin/zig)) {
+      $env:append-to-path~ $E:HOME/repos/zig/build/stage4/bin
+      set zig_bin = $E:HOME/repos/zig/build/stage4/bin/zig
+    } elif (put ?(os:exists $E:HOME/repos/zig/build/stage3/bin/zig)) {
+      $env:append-to-path~ $E:HOME/repos/zig/build/stage3/bin
+      set zig_bin = $E:HOME/repos/zig/build/stage3/bin/zig
+    } elif (put ?(os:exists $E:XDG_LOCAL_HOME/bin/zig)) {
+      $env:append-to-path~ $E:XDG_LOCAL_HOME/bin
+      set zig_bin = $E:XDG_LOCAL_HOME/bin/zig
+    } elif (put ?(search-external zig)) {
+      set zig_bin = (search-external zig)
+    } else {
+      fail "Zig installation not found"
+    }
+
+    $zig_bin $@args
+}
+edit:add-var zig~ $zig~
