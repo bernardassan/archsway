@@ -30,7 +30,7 @@
 	signOff = true
 [merge]
 	conflictStyle = diff3
-	ff = false
+	ff = true
 	branchdesc = true
 	log = 1024
 [rerere]
