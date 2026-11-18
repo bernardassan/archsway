@@ -257,6 +257,7 @@ podman compose down --remove-orphans
 podman compose down --volumes
 podman run --rm -it localhost/imgrecog_api:latest sh
 podman run -itd --privileged --env-file .env --security-opt seccomp=unconfined -v .:/server -w /server --name outer-containers docker.io/library/alpine:edge sh
+podman pull docker.io/crossbario/autobahn-testsuite
 poetry add jupyterlab
 poetry add pytest --group dev
 poetry config --list

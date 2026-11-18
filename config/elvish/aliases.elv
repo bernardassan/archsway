@@ -16,9 +16,6 @@ edit:add-var display-power-options~ $sh:display_power_options~
 
 set edit:insert:binding[Alt-l] = { edit:clear }
 
-fn to-hex {|num| printf "0x%x\n" $num }
-edit:add-var to-hex~ $to-hex~
-
 fn el { exec elvish }
 edit:add-var el~ $el~
 
@@ -522,3 +519,8 @@ fn man {|@args|
     }
 }
 edit:add-var man~ $man~
+
+fn toBin {|@inputs|
+  zig run $E:ELVRC/lib/toBin.zig -- $@inputs
+}
+edit:add-var toBin~ $toBin~
