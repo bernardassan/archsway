@@ -116,6 +116,7 @@ env CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Release -DZIG_NO_LIB=ON -DZIG_
 env GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2 git pull # debug git
 env RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup rustup update
 env WINEDEBUG=+ntdll,+ioctl wine ai_poll.exe 2>&1
+env ZIG_DEBUG_CMD=1 zig build --help | grep maker # ZIG_DEBUG_CMD builds maker in debug mode
 eq (uname) Linux
 eval (ssh-agent -t1d)
 exec
@@ -255,9 +256,9 @@ pkill --signal KILL pueued
 podman --log-level=debug run -it -v (pwd):/backend -w /backend --rm --security-opt seccomp=unconfined cgr.dev/chainguard/wolfi-base:latest sh
 podman compose down --remove-orphans
 podman compose down --volumes
+podman pull docker.io/crossbario/autobahn-testsuite
 podman run --rm -it localhost/imgrecog_api:latest sh
 podman run -itd --privileged --env-file .env --security-opt seccomp=unconfined -v .:/server -w /server --name outer-containers docker.io/library/alpine:edge sh
-podman pull docker.io/crossbario/autobahn-testsuite
 poetry add jupyterlab
 poetry add pytest --group dev
 poetry config --list
